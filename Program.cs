@@ -7,7 +7,6 @@ namespace OT60
     public static void Main(string[] args)
     {
       Console.WriteLine("OT60 is a clone of original Tetris from Elektronika 60"); 
-      var foo = new EmptyClass();
     }
   }
 }
