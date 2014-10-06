@@ -1,12 +1,13 @@
 ﻿using System;
 
-namespace ot60
+namespace OT60
 {
   class MainClass
   {
     public static void Main(string[] args)
     {
-      Console.WriteLine("Hello World!"); 
+      Console.WriteLine("OT60 is a clone of original Tetris from Elektronika 60"); 
+      var foo = new EmptyClass();
     }
   }
 }
