@@ -54,6 +54,7 @@
     <Compile Include="ConsoleImplementation.cs" />
     <Compile Include="FastConsoleImplementation.cs" />
     <Compile Include="Fill.cs" />
+    <Compile Include="SizeException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

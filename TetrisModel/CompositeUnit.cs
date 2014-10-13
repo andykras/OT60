@@ -54,6 +54,12 @@ namespace TetrisModel
       foreach (var unit in units) unit.Clear();
     }
 
+    public override void Move(int dx, int dy)
+    {
+      base.Position(x + dx, y + dy);
+      foreach (var unit in units) unit.Move(dx, dy);
+    }
+
     protected List<GameUnit> units;
   }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace TetrisModel
 {
@@ -20,11 +21,14 @@ namespace TetrisModel
     {
       Registry<GraphicsFactory>.Register(this);
 
+      // todo: read all from settings
       //var sprite = Registry<Settings>.GetInstanceOf<TetrisSettings>().GetSprite();
       //var sprite = new[]{ "===", " . ", "===" };
       var sprite = "[]";
       cell = new ConsoleImplementation(sprite);
       fill = new ConsoleImplementation(" .");
+
+      if (cell.Width != fill.Width || cell.Height != fill.Height) throw new SizeException("ConsoleGraphicsFactory: Size of cell and fill MUST BE THE SAME. Terminated");
     }
 
     public GameUnitImplementation CreateCellImplementation()

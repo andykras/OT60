@@ -61,6 +61,11 @@ namespace TetrisModel
       Position(state * step);
     }
 
+    public virtual void Move(int dx, int dy)
+    {
+      Position(x + dx, y + dy);
+    }
+
     public event InvalidateEventHandler Invalidate;
   }
 }
