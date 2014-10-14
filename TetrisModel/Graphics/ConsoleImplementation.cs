@@ -69,9 +69,8 @@ namespace TetrisModel
         var xnew = xc + (xx - xc) * Math.Cos(angle) - (yy - yc) * Math.Sin(angle);
         var ynew = yc + (xx - xc) * Math.Sin(angle) + (yy - yc) * Math.Cos(angle);
         if (xnew < 0 || xnew >= Console.BufferWidth || ynew < 0 || ynew >= Console.BufferHeight) continue;
+        //Console.SetCursorPosition((int) Math.Floor(xnew + 0.5), (int) Math.Floor(ynew + 0.5));
         Console.SetCursorPosition((int) xnew, (int) ynew);
-        //Console.SetCursorPosition((int) Math.Round(xnew), (int) Math.Round(ynew));
-        //Console.SetCursorPosition((int) Math.Floor(xnew), (int) Math.Floor(ynew));
         Console.Write(sprite[col][raw]);
       }
     }

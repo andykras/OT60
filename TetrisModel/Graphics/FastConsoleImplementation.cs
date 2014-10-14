@@ -33,7 +33,8 @@ namespace TetrisModel
 
       foreach (var str in sprite) {
         if (x < 0 || x >= Console.BufferWidth || y < 0 || y >= Console.BufferHeight) return;
-        Console.SetCursorPosition((int) Math.Round(x), (int) Math.Round(y));
+        //Console.SetCursorPosition((int) Math.Round(x), (int) Math.Round(y));
+        Console.SetCursorPosition((int) Math.Floor(x + 0.5), (int) Math.Floor(y + 0.5));
         Console.Write(str);
         y++;
       }
