@@ -32,16 +32,8 @@ namespace TetrisModel
     }
 
 
-    public Fill(double x, double y, int n, int m, Color c, GraphicsFactory factory) : base(x, y)
+    public Fill(double x, double y, int n, int m, Color c, GraphicsFactory factory) : this(x, y, n, m, c, factory.CreateFillImplementation)
     {
-      color = c;
-      N = n;
-      M = m;
-      var tmp = factory.CreateFillImplementation();
-      w = tmp.Width;
-      h = tmp.Height;
-      for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) AddUnit(new Cell(x + i * w, y + j * h, (Color) (1 + rnd.Next(15)), () => tmp));
-      for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) AddUnit(new Cell(x + i * w, y + j * h, color, () => tmp));
     }
 
     public override void Draw()

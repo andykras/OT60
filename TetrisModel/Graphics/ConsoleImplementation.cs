@@ -60,7 +60,7 @@ namespace TetrisModel
     {
       Console.ForegroundColor = (ConsoleColor) Enum.Parse(typeof(ConsoleColor), color.ToString());
       foreach (var item in coords) {
-        var col = ((item - 1) / Width);
+        var col = (item - 1) / Width;
         var raw = item - 1 - col * Width;
         var xx = x + raw;
         var yy = y + col;
@@ -70,6 +70,8 @@ namespace TetrisModel
         var ynew = yc + (xx - xc) * Math.Sin(angle) + (yy - yc) * Math.Cos(angle);
         if (xnew < 0 || xnew >= Console.BufferWidth || ynew < 0 || ynew >= Console.BufferHeight) continue;
         Console.SetCursorPosition((int) xnew, (int) ynew);
+        //Console.SetCursorPosition((int) Math.Round(xnew), (int) Math.Round(ynew));
+        //Console.SetCursorPosition((int) Math.Floor(xnew), (int) Math.Floor(ynew));
         Console.Write(sprite[col][raw]);
       }
     }

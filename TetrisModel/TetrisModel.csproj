@@ -38,23 +38,35 @@
     <Compile Include="SimpleTetrisFactory.cs" />
     <Compile Include="TetrisBuilder.cs" />
     <Compile Include="SimpleTetrisBuilder.cs" />
-    <Compile Include="GameUnit.cs" />
-    <Compile Include="InvalidateEventHandler.cs" />
-    <Compile Include="CompositeUnit.cs" />
     <Compile Include="Board.cs" />
-    <Compile Include="Mesh.cs" />
-    <Compile Include="Color.cs" />
-    <Compile Include="ConsoleGraphicsFactory.cs" />
     <Compile Include="SmartLock.cs" />
     <Compile Include="Registry.cs" />
-    <Compile Include="GraphicsFactory.cs" />
     <Compile Include="CellConsoleClassic.cs" />
-    <Compile Include="GameUnitImplementation.cs" />
-    <Compile Include="Cell.cs" />
-    <Compile Include="ConsoleImplementation.cs" />
-    <Compile Include="FastConsoleImplementation.cs" />
-    <Compile Include="Fill.cs" />
-    <Compile Include="SizeException.cs" />
+    <Compile Include="Patterns\Pattern.cs" />
+    <Compile Include="Patterns\PatternFactory.cs" />
+    <Compile Include="Patterns\PyramidePatternFactory.cs" />
+    <Compile Include="Patterns\PatternPyramide.cs" />
+    <Compile Include="Patterns\BoxPatternFactory.cs" />
+    <Compile Include="Patterns\PatternBox.cs" />
+    <Compile Include="Graphics\ConsoleGraphicsFactory.cs" />
+    <Compile Include="Graphics\FastConsoleImplementation.cs" />
+    <Compile Include="Graphics\ConsoleImplementation.cs" />
+    <Compile Include="Graphics\GraphicsFactory.cs" />
+    <Compile Include="Exceptions\SizeException.cs" />
+    <Compile Include="Graphics\Color.cs" />
+    <Compile Include="Units\Cell.cs" />
+    <Compile Include="Units\CompositeUnit.cs" />
+    <Compile Include="Units\Fill.cs" />
+    <Compile Include="Units\GameUnit.cs" />
+    <Compile Include="Units\GameUnitImplementation.cs" />
+    <Compile Include="Units\InvalidateEventHandler.cs" />
+    <Compile Include="Units\Mesh.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Patterns\" />
+    <Folder Include="Graphics\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Units\" />
+  </ItemGroup>
 </Project>
