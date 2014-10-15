@@ -1,57 +1,108 @@
 ﻿using System;
 using TetrisModel;
 using System.Threading;
-using System.Runtime.InteropServices;
 
 namespace CoordinatesTransform
 {
   class MainClass
   {
+    /// <summary>
+    /// The color.
+    /// </summary>
+    const Color color = Color.DarkGreen;
+
+    /// <summary>
+    /// Draw!
+    /// </summary>
+    /// <param name="args">The command-line arguments.</param>
     public static void Main(string[] args)
     {
       Console.CursorVisible = false;
-      // 0
-//      const int size = 5;
-//      var sprite = new[]{ "*****", "*   *", "* o *", "*   *", "*****" };
+      var mesh = CreateMesh();
+      var ang = 0;
+      while (true) {
+        while (Console.KeyAvailable == false) {
+          Clear();
+          mesh.Draw();
+          Console.SetCursorPosition(0, 0);
+          Console.ForegroundColor = ConsoleColor.White;
+          Console.Write("angle: {0}", ang / 12.0 * 180);
+          Thread.Sleep(25);
+        }
+        var key = Console.ReadKey(true).Key;
+        if (key == ConsoleKey.Escape) break;
+        if (key == ConsoleKey.LeftArrow) mesh.Move(-2, 0);
+        if (key == ConsoleKey.RightArrow) mesh.Move(2, 0);
+        if (key == ConsoleKey.UpArrow) mesh.Move(0, 2);
+        if (key == ConsoleKey.DownArrow) mesh.Move(0, -2);
+        if (key == ConsoleKey.R) mesh.Rotate(0);
+        if (key == ConsoleKey.S) {
+          mesh = CreateMesh();
+          ang = 0;
+        }
+        if (key == ConsoleKey.E) mesh.Position(Math.PI / 12 * ++ang);
+        if (key == ConsoleKey.W) mesh.Position(Math.PI / 12 * --ang);
+      }
+    }
 
-      // 1
-      const int size = 5;
-      var str = new string('*', size);
+    /// <summary>
+    /// Creates the mesh.
+    /// </summary>
+    /// <returns>The mesh.</returns>
+    static Mesh CreateMesh()
+    {
+      const int size = 7;
+      var str = new string('■', size);
       var sprite = new string[size];
       for (int i = 0; i < sprite.Length; i++) sprite[i] = str;
 
       var x = -size * 1.5;
       var y = size * 1.5;
-      var cell = new Mesh();
-      cell.AddUnit(new Cell(x - size * 4, y, Color.Green, () => new FastConsoleImplementation(sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
-      cell.AddUnit(new Cell(x + size * 4, y, Color.Green, () => new ConsoleImplementation(sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
-      cell.AddUnit(new Cell(0, 0, Color.Green, () => new ConsoleImplementation("O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O", "O")));
-      cell.AddUnit(new Cell(x, y, Color.Green, () => new ConsoleImplementation(sprite)));
-      var ang = 0;
-      while (true) {
-        while (Console.KeyAvailable == false) {
-          Clear();
-          cell.Draw();
-          Thread.Sleep(10);
-        }
-        var key = Console.ReadKey(true).Key;
-        if (key == ConsoleKey.Escape) break;
-        if (key == ConsoleKey.LeftArrow) cell.Move(-1, 0);
-        if (key == ConsoleKey.RightArrow) cell.Move(1, 0);
-        if (key == ConsoleKey.UpArrow) cell.Move(0, 1);
-        if (key == ConsoleKey.DownArrow) cell.Move(0, -1);
-        if (key == ConsoleKey.R) cell.Rotate(0);
-        if (key == ConsoleKey.S) cell.Position(x, y, 0);
-        if (key == ConsoleKey.E) cell.Position(Math.PI / 12 * ++ang);
-      }
+      var mesh = new Mesh();
+      mesh.AddUnit(new Cell(x - size * 5, y, color, () => new FastConsoleImplementation(sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
+      mesh.AddUnit(new Cell(x + size * 5, y, color, () => new ConsoleImplementation(sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
+      mesh.AddUnit(new Cell(x + 2 * size * 5, y, color, () => new ConsoleImplementation("█", "█", "█", "█", "█", "█", "█", "█", "█", "█", "█", "█", "█", "█", "█", "█", "█")));
+      var mario = new [] { 
+        "              ████████  ██████  ",
+        "          ████▓▓▓▓▓▓████░░░░░░██",
+        "        ██▓▓▓▓▓▓▓▓▓▓▓▓██░░░░░░██",
+        "      ██▓▓▓▓▓▓████████████░░░░██",
+        "    ██▓▓▓▓▓▓████████████████░░██",
+        "    ██▓▓████░░░░░░░░░░░░██████  ",
+        "  ████████░░░░░░██░░██░░██▓▓▓▓██",
+        "  ██░░████░░░░░░██░░██░░██▓▓▓▓██",
+        "██░░░░██████░░░░░░░░░░░░░░██▓▓██",
+        "██░░░░░░██░░░░██░░░░░░░░░░██▓▓██",
+        "  ██░░░░░░░░████████░░░░██████  ",
+        "    ████░░░░░░░░██████████▓▓██  ",
+        "      ██████░░░░░░░░░░██▓▓▓▓██  ",
+        "  ░░██▓▓▓▓██████████████▓▓██    ",
+        "  ██▓▓▓▓▓▓▓▓████░░░░░░████      ",
+        "████▓▓▓▓▓▓▓▓██░░░░░░░░░░██      ",
+        "████▓▓▓▓▓▓▓▓██░░░░░░░░░░██      ",
+        "██████▓▓▓▓▓▓▓▓██░░░░░░████████  ",
+        "  ██████▓▓▓▓▓▓████████████████  ",
+        "    ██████████████████████▓▓▓▓██",
+        "  ██▓▓▓▓████████████████▓▓▓▓▓▓██",
+        "████▓▓██████████████████▓▓▓▓▓▓██",
+        "██▓▓▓▓██████████████████▓▓▓▓▓▓██",
+        "██▓▓▓▓██████████      ██▓▓▓▓████",
+        "██▓▓▓▓████              ██████  ",
+        "  ████                          "
+      };
+      mesh.AddUnit(new Cell(x, y, color, () => new ConsoleImplementation(mario)));
+      return mesh;
     }
 
+    /// <summary>
+    /// Fill screen
+    /// </summary>
     static void Clear()
     {
       for (var i = 0; i < Console.BufferHeight; i++) {
         Console.ForegroundColor = ConsoleColor.Gray;
         Console.SetCursorPosition(0, i);
-        Console.Write(new String('-', Console.BufferWidth));
+        Console.Write(new String('.', Console.BufferWidth));
       }
     }
   }

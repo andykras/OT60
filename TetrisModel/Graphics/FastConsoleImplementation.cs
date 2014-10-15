@@ -40,8 +40,10 @@ namespace TetrisModel
 
       // draw sprite, note: angle will be ignored
       foreach (var str in sprite) {
-        var xnew = Math.Floor(x + 0.5);
-        var ynew = Math.Floor(y + 0.5);
+//        var xnew = Math.Floor(x + 0.5);
+//        var ynew = Math.Floor(y + 0.5);
+        var xnew = Scale(x, 0.5);
+        var ynew = Scale(y, 0.5);
         if (xnew < 0 || xnew >= Console.BufferWidth || ynew < 0 || ynew >= Console.BufferHeight) return;
         Console.SetCursorPosition((int) xnew, (int) ynew);
         Console.Write(str);
@@ -50,6 +52,18 @@ namespace TetrisModel
       
     }
 
+    const double epsilon = 0.000001;
+
+    static double Scale(double val, double scale)
+    {
+      var sign = Math.Sign(val);
+      val = Math.Abs(val);
+
+      int count = (int) (val / scale);
+      double rest = val - count * scale;
+      if (Math.Abs(scale - rest) < epsilon) count++;
+      return count * scale * sign;
+    }
     public int Width { get; private set; }
 
     public int Height { get; private set; }
