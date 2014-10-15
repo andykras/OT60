@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{151F82AA-1884-494A-9199-93081C6442F1}</ProjectGuid>
+    <ProjectGuid>{B5E79DDA-4B42-4046-8CC9-65C05F926E43}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>OT60</RootNamespace>
-    <AssemblyName>ot60</AssemblyName>
+    <RootNamespace>CoordinatesTransform</RootNamespace>
+    <AssemblyName>CoordinatesTransform</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,7 +37,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="TetrisModel\TetrisModel.csproj">
+    <ProjectReference Include="..\..\TetrisModel\TetrisModel.csproj">
       <Project>{49726EFE-BC5B-43A1-A6B4-877387ABEBBB}</Project>
       <Name>TetrisModel</Name>
     </ProjectReference>

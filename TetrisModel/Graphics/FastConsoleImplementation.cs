@@ -2,6 +2,9 @@
 
 namespace TetrisModel
 {
+  /// <summary>
+  /// Simple (plain) drawing - angle of sprite will be ignored
+  /// </summary>
   public class FastConsoleImplementation : GameUnitImplementation
   {
     /// <summary>
@@ -31,10 +34,16 @@ namespace TetrisModel
     {
       Console.ForegroundColor = (ConsoleColor) Enum.Parse(typeof(ConsoleColor), color.ToString());
 
+      // transform coordinate system
+      x = x + (int) Math.Floor(Console.BufferWidth * 0.5 - 1 + 0.5);
+      y = -y + (int) Math.Floor(Console.BufferHeight * 0.5 - 1 + 0.5);
+
+      // draw sprite, note: angle will be ignored
       foreach (var str in sprite) {
-        if (x < 0 || x >= Console.BufferWidth || y < 0 || y >= Console.BufferHeight) return;
-        //Console.SetCursorPosition((int) Math.Round(x), (int) Math.Round(y));
-        Console.SetCursorPosition((int) Math.Floor(x + 0.5), (int) Math.Floor(y + 0.5));
+        var xnew = Math.Floor(x + 0.5);
+        var ynew = Math.Floor(y + 0.5);
+        if (xnew < 0 || xnew >= Console.BufferWidth || ynew < 0 || ynew >= Console.BufferHeight) return;
+        Console.SetCursorPosition((int) xnew, (int) ynew);
         Console.Write(str);
         y++;
       }

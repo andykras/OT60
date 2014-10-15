@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ot60", "ot60.csproj", "{151F82AA-1884-494A-9199-93081C6442F1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TetrisModel", "TetrisModel\TetrisModel.csproj", "{49726EFE-BC5B-43A1-A6B4-877387ABEBBB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{E843B3FE-36A1-4C28-98AC-66AA83D46437}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameUnitTesting", "GameUnitTesting\GameUnitTesting.csproj", "{EF67F245-594A-42DB-831A-FA3601AA6EFF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoordinatesTransform", "Testing\CoordinatesTransform\CoordinatesTransform.csproj", "{B5E79DDA-4B42-4046-8CC9-65C05F926E43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameUnits", "Testing\GameUnits\GameUnits.csproj", "{B82FB38E-8925-414A-9BFF-4F486B33DFE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OT60", "OT60\OT60.csproj", "{24BCAD13-B426-49D3-93D2-7572204B0CF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,24 +17,29 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{151F82AA-1884-494A-9199-93081C6442F1}.Debug|x86.ActiveCfg = Debug|x86
-		{151F82AA-1884-494A-9199-93081C6442F1}.Debug|x86.Build.0 = Debug|x86
-		{151F82AA-1884-494A-9199-93081C6442F1}.Release|x86.ActiveCfg = Release|x86
-		{151F82AA-1884-494A-9199-93081C6442F1}.Release|x86.Build.0 = Release|x86
+		{24BCAD13-B426-49D3-93D2-7572204B0CF0}.Debug|x86.ActiveCfg = Debug|x86
+		{24BCAD13-B426-49D3-93D2-7572204B0CF0}.Debug|x86.Build.0 = Debug|x86
+		{24BCAD13-B426-49D3-93D2-7572204B0CF0}.Release|x86.ActiveCfg = Release|x86
+		{24BCAD13-B426-49D3-93D2-7572204B0CF0}.Release|x86.Build.0 = Release|x86
 		{49726EFE-BC5B-43A1-A6B4-877387ABEBBB}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{49726EFE-BC5B-43A1-A6B4-877387ABEBBB}.Debug|x86.Build.0 = Debug|Any CPU
 		{49726EFE-BC5B-43A1-A6B4-877387ABEBBB}.Release|x86.ActiveCfg = Release|Any CPU
 		{49726EFE-BC5B-43A1-A6B4-877387ABEBBB}.Release|x86.Build.0 = Release|Any CPU
-		{EF67F245-594A-42DB-831A-FA3601AA6EFF}.Debug|x86.ActiveCfg = Debug|x86
-		{EF67F245-594A-42DB-831A-FA3601AA6EFF}.Debug|x86.Build.0 = Debug|x86
-		{EF67F245-594A-42DB-831A-FA3601AA6EFF}.Release|x86.ActiveCfg = Release|x86
-		{EF67F245-594A-42DB-831A-FA3601AA6EFF}.Release|x86.Build.0 = Release|x86
+		{B5E79DDA-4B42-4046-8CC9-65C05F926E43}.Debug|x86.ActiveCfg = Debug|x86
+		{B5E79DDA-4B42-4046-8CC9-65C05F926E43}.Debug|x86.Build.0 = Debug|x86
+		{B5E79DDA-4B42-4046-8CC9-65C05F926E43}.Release|x86.ActiveCfg = Release|x86
+		{B5E79DDA-4B42-4046-8CC9-65C05F926E43}.Release|x86.Build.0 = Release|x86
+		{B82FB38E-8925-414A-9BFF-4F486B33DFE3}.Debug|x86.ActiveCfg = Debug|x86
+		{B82FB38E-8925-414A-9BFF-4F486B33DFE3}.Debug|x86.Build.0 = Debug|x86
+		{B82FB38E-8925-414A-9BFF-4F486B33DFE3}.Release|x86.ActiveCfg = Release|x86
+		{B82FB38E-8925-414A-9BFF-4F486B33DFE3}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{EF67F245-594A-42DB-831A-FA3601AA6EFF} = {E843B3FE-36A1-4C28-98AC-66AA83D46437}
+		{B5E79DDA-4B42-4046-8CC9-65C05F926E43} = {E843B3FE-36A1-4C28-98AC-66AA83D46437}
+		{B82FB38E-8925-414A-9BFF-4F486B33DFE3} = {E843B3FE-36A1-4C28-98AC-66AA83D46437}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = GameUnitTesting\GameUnitTesting.csproj
+		StartupItem = Testing\CoordinatesTransform\CoordinatesTransform.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

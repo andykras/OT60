@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace TetrisModel
 {
   /// <summary>
-  /// Cell console.
+  /// Full sprite drawing implementation for Console
   /// </summary>
   public class ConsoleImplementation : GameUnitImplementation
   {
     /// <summary>
-    /// The coords.
+    /// Coordinates which were eobtained from sprite
     /// </summary>
     private readonly List<int> coords;
 
@@ -59,6 +59,12 @@ namespace TetrisModel
     public virtual void Draw(double x, double y, double angle, Color color)
     {
       Console.ForegroundColor = (ConsoleColor) Enum.Parse(typeof(ConsoleColor), color.ToString());
+
+      // transform coordinate system
+      x = x + (int) Math.Floor(Console.BufferWidth * 0.5 - 1 + 0.5);
+      y = -y + (int) Math.Floor(Console.BufferHeight * 0.5 - 1 + 0.5);
+
+      // draw sprite
       foreach (var item in coords) {
         var col = (item - 1) / Width;
         var raw = item - 1 - col * Width;
@@ -68,8 +74,9 @@ namespace TetrisModel
         var yc = y + (Height - 1) * 0.5;
         var xnew = xc + (xx - xc) * Math.Cos(angle) - (yy - yc) * Math.Sin(angle);
         var ynew = yc + (xx - xc) * Math.Sin(angle) + (yy - yc) * Math.Cos(angle);
+        xnew = Math.Floor(xnew + 0.5);
+        ynew = Math.Floor(ynew + 0.5);
         if (xnew < 0 || xnew >= Console.BufferWidth || ynew < 0 || ynew >= Console.BufferHeight) continue;
-        //Console.SetCursorPosition((int) Math.Floor(xnew + 0.5), (int) Math.Floor(ynew + 0.5));
         Console.SetCursorPosition((int) xnew, (int) ynew);
         Console.Write(sprite[col][raw]);
       }

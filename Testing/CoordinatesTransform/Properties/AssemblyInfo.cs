@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("OT60")]
+[assembly: AssemblyTitle("CoordinatesTransform")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("andykras")]
+[assembly: AssemblyCopyright("nath")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

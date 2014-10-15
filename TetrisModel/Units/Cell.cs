@@ -34,13 +34,13 @@ namespace TetrisModel
         var col = (item - 1) / pattern.Width;
         var raw = item - 1 - col * pattern.Width;
         var xx = x + raw;
-        var yy = y + col;
+        var yy = y - col;
 
         var xc = x + 0.5 * (pattern.Width - 1);
-        var yc = y + 0.5 * (pattern.Height - 1);
+        var yc = y - 0.5 * (pattern.Height - 1);
 
-        var xnew = xc + (xx - xc) * Math.Cos(angle) - (yy - yc) * Math.Sin(angle);
-        var ynew = yc + (xx - xc) * Math.Sin(angle) + (yy - yc) * Math.Cos(angle);
+        var xnew = xc + (xx - xc) * Math.Cos(angle) + (yy - yc) * Math.Sin(angle);
+        var ynew = yc - (xx - xc) * Math.Sin(angle) + (yy - yc) * Math.Cos(angle);
 
         xnew = x + (xnew - x) * device.Width;
         ynew = y + (ynew - y) * device.Height;
@@ -48,13 +48,13 @@ namespace TetrisModel
         device.Draw(xnew, ynew, angle, color);
       }
 
-//      Console.ForegroundColor = ConsoleColor.Red;
-//      Console.SetCursorPosition((int) x, (int) y - 2);
-//      Console.Write("{0}, {1}, {2}", x, y, angle);
-//      device.Draw(x, y, angle, color);
-//      Console.ForegroundColor = ConsoleColor.Red;
-//      Console.SetCursorPosition((int) x, (int) y);
-//      Console.Write("*");
+      // draw reference point
+      Console.ForegroundColor = ConsoleColor.Red;
+      var xr = x + (int) Math.Floor(Console.BufferWidth * 0.5 - 1 + 0.5);
+      var yr = -y + (int) Math.Floor(Console.BufferHeight * 0.5 - 1 + 0.5);
+      if (xr < 0 || xr >= Console.BufferWidth || yr < 0 || yr >= Console.BufferHeight) return;
+      Console.SetCursorPosition((int) xr, (int) yr);
+      Console.Write("X");
     }
 
     public override void Clear()

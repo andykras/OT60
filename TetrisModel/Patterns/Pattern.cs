@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace TetrisModel
@@ -52,16 +53,16 @@ namespace TetrisModel
     /// <returns>The enumerator.</returns>
     public IEnumerator<byte> GetEnumerator()
     {
-      foreach (var i in coords) yield return i;
+      foreach (var position in coords) yield return position;
     }
 
     /// <summary>
-    /// Gets the enumerator.
+    /// Gets the explicit enumerator
     /// </summary>
     /// <returns>The enumerator.</returns>
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator()
     {
-      throw new NotImplementedException();
+      return GetEnumerator();
     }
   }
 }
