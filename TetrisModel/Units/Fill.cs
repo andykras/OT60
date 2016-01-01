@@ -19,16 +19,16 @@ namespace TetrisModel
 
     private static Random rnd = new Random();
 
-    public Fill(double x, double y, int n, int m, Color c, Func<GameUnitImplementation> creator) : base(x, y)
+    public Fill(double x, double y, int n, int m, Color c, Func<GameUnitImplementation> deviceCreator) : base(x, y)
     {
       color = c;
       N = n;
       M = m;
-      var tmp = creator();
+      var tmp = deviceCreator();
       w = tmp.Width;
       h = tmp.Height;
-      for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) AddUnit(new Cell(x + i * w, y + j * h, (Color) (1 + rnd.Next(15)), creator));
-      for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) AddUnit(new Cell(x + i * w, y + j * h, color, creator));
+      for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) AddUnit(new Cell(x + i * w, y + j * h, (Color) (1 + rnd.Next(15)), deviceCreator));
+      for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) AddUnit(new Cell(x + i * w, y + j * h, color, deviceCreator));
     }
 
 

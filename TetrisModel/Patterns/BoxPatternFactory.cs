@@ -16,10 +16,10 @@ namespace TetrisModel
 
     public override Pattern CreatePattern()
     {
-      if (!patterns.ContainsKey(PatternType.Box)) {
-        patterns[PatternType.Box] = new PatternBox();
+      if (!Patterns.ContainsKey(PatternType.Box)) {
+        Patterns[PatternType.Box] = new PatternBox();
       }
-      return patterns[PatternType.Box];
+      return Patterns[PatternType.Box];
     }
   }
 }

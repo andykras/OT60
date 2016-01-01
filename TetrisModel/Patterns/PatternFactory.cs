@@ -18,6 +18,7 @@ namespace TetrisModel
       BootLeft,
       BootRight,
       Box,
+      LastPattern
     }
 
     /// <summary>
@@ -29,7 +30,7 @@ namespace TetrisModel
     /// <summary>
     /// Predefined patterns (referring to flyweight pattern some of the Patterns can be a flyweights)
     /// </summary>
-    protected Dictionary<PatternType,Pattern> patterns = new Dictionary<PatternType, Pattern>(7);
+    protected Dictionary<PatternType,Pattern> Patterns = new Dictionary<PatternType, Pattern>();
   }
 }
 

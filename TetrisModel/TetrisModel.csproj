@@ -61,6 +61,7 @@
     <Compile Include="Units\GameUnitImplementation.cs" />
     <Compile Include="Units\InvalidateEventHandler.cs" />
     <Compile Include="Units\Mesh.cs" />
+    <Compile Include="ConsoleHelpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

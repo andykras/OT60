@@ -24,10 +24,8 @@ namespace TetrisModel
       // todo: read all from settings
       //var sprite = Registry<Settings>.GetInstanceOf<TetrisSettings>().GetSprite();
       //var sprite = new[]{ "===", " . ", "===" };
-      var sprite = "34";
-      cell = new ConsoleImplementation(sprite);
-      fill = new ConsoleImplementation("12");
-
+      cell = new ConsoleImplementation(new []{ "██", "██" });
+      fill = new ConsoleImplementation(new []{ "..", ".." });
 
       if (cell.Width != fill.Width || cell.Height != fill.Height) throw new SizeException("ConsoleGraphicsFactory: Size of cell and fill MUST BE THE SAME. Terminated");
     }

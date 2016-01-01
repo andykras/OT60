@@ -61,8 +61,8 @@ namespace TetrisModel
       Console.ForegroundColor = (ConsoleColor) Enum.Parse(typeof(ConsoleColor), color.ToString());
 
       // transform coordinate system
-      x = x + (int) Math.Floor(Console.BufferWidth * 0.5 - 1 + 0.5);
-      y = -y + (int) Math.Floor(Console.BufferHeight * 0.5 - 1 + 0.5);
+      x = x + (int) Math.Floor(Console.WindowWidth * 0.5 - 1 + 0.5);
+      y = -y + (int) Math.Floor(Console.WindowHeight * 0.5 - 1 + 0.5);
 
       // draw sprite
       foreach (var item in coords) {
@@ -78,7 +78,7 @@ namespace TetrisModel
 //        ynew = Math.Floor(ynew + 0.5);
         xnew = Scale(xnew, 0.5);
         ynew = Scale(ynew, 0.5);
-        if (xnew < 0 || xnew >= Console.BufferWidth || ynew < 0 || ynew >= Console.BufferHeight) continue;
+        if (xnew < 0 || xnew >= Console.WindowWidth || ynew < 0 || ynew >= Console.WindowHeight) continue;
         Console.SetCursorPosition((int) xnew, (int) ynew);
         Console.Write(sprite[col][raw]);
       }

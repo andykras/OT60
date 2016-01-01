@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoordinatesTransform", "Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameUnits", "Testing\GameUnits\GameUnits.csproj", "{B82FB38E-8925-414A-9BFF-4F486B33DFE3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawingSpeed", "Testing\DrawingSpeed\DrawingSpeed.csproj", "{0BBE4C91-2C84-4FD4-A121-B37A5AC21269}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OT60", "OT60\OT60.csproj", "{24BCAD13-B426-49D3-93D2-7572204B0CF0}"
 EndProject
 Global
@@ -17,6 +19,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BBE4C91-2C84-4FD4-A121-B37A5AC21269}.Debug|x86.ActiveCfg = Debug|x86
+		{0BBE4C91-2C84-4FD4-A121-B37A5AC21269}.Debug|x86.Build.0 = Debug|x86
+		{0BBE4C91-2C84-4FD4-A121-B37A5AC21269}.Release|x86.ActiveCfg = Release|x86
+		{0BBE4C91-2C84-4FD4-A121-B37A5AC21269}.Release|x86.Build.0 = Release|x86
 		{24BCAD13-B426-49D3-93D2-7572204B0CF0}.Debug|x86.ActiveCfg = Debug|x86
 		{24BCAD13-B426-49D3-93D2-7572204B0CF0}.Debug|x86.Build.0 = Debug|x86
 		{24BCAD13-B426-49D3-93D2-7572204B0CF0}.Release|x86.ActiveCfg = Release|x86
@@ -37,9 +43,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B5E79DDA-4B42-4046-8CC9-65C05F926E43} = {E843B3FE-36A1-4C28-98AC-66AA83D46437}
 		{B82FB38E-8925-414A-9BFF-4F486B33DFE3} = {E843B3FE-36A1-4C28-98AC-66AA83D46437}
+		{0BBE4C91-2C84-4FD4-A121-B37A5AC21269} = {E843B3FE-36A1-4C28-98AC-66AA83D46437}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Testing\CoordinatesTransform\CoordinatesTransform.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None
