@@ -44,9 +44,8 @@ namespace CoordinatesTransform
 
       new Thread(() =>
       {
-        Thread.CurrentThread.IsBackground = true;
-        int height = Console.WindowHeight;
-        int width = Console.WindowWidth;
+        var height = Console.WindowHeight;
+        var width = Console.WindowWidth;
         while (true) {
           if (height != Console.WindowHeight || width != Console.WindowWidth) {
             height = Console.WindowHeight;
@@ -55,7 +54,7 @@ namespace CoordinatesTransform
           }
           Thread.Sleep(100);
         }
-      }).Start();
+      }){ IsBackground = true }.Start();
 
       ClearScreen();
 
@@ -82,8 +81,8 @@ namespace CoordinatesTransform
         if (key == ConsoleKey.UpArrow) mesh.Move(0, step);
         if (key == ConsoleKey.DownArrow) mesh.Move(0, -step);
         if (key == ConsoleKey.R) mesh.Rotate(0);
-        if (key == ConsoleKey.E) mesh.Position(Math.PI / 12 * ++ang);
-        if (key == ConsoleKey.W) mesh.Position(Math.PI / 12 * --ang);
+        if (key == ConsoleKey.E) mesh.Rotate(Math.PI / 12 * ++ang);
+        if (key == ConsoleKey.W) mesh.Rotate(Math.PI / 12 * --ang);
         if (key == ConsoleKey.S) {
           ClearScreen();
           mesh = CreateMesh();
@@ -103,7 +102,7 @@ namespace CoordinatesTransform
     /// Creates the mesh.
     /// </summary>
     /// <returns>The mesh.</returns>
-    static Mesh CreateMesh()
+    static CompositeUnit CreateMesh()
     {
       const int size = 7;
       var str = new string('■', size);
@@ -112,10 +111,10 @@ namespace CoordinatesTransform
 
       var x = -size * 1.5;
       var y = size * 1.5;
-      var mesh = new Mesh();
-      mesh.AddUnit(new Cell(x - size * 5, y + 0.5 * size, color, background, () => new FastConsoleImplementation(fill_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
-      mesh.AddUnit(new Cell(x + size * 5, y + 0.5 * size, color, background, () => new ConsoleImplementation(fill_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
-      mesh.AddUnit(new Cell(x + 2 * size * 5, y, color, background, () => new ConsoleImplementation("█", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "█")));
+      var mesh = new CompositeUnit();
+      mesh.AddUnit(new Sprite(x - size * 5, y + 0.5 * size, color, background, () => new FastConsoleDevice(fill_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
+      mesh.AddUnit(new Sprite(x + size * 5, y + 0.5 * size, color, background, () => new ConsoleDevice(fill_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
+      mesh.AddUnit(new Sprite(x + 2 * size * 5, y, color, background, () => new ConsoleDevice("█", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "█")));
 
       var skull_sprite = new [] { 
         "    ▄▄▄▄▄▄▄    ", 
@@ -124,8 +123,8 @@ namespace CoordinatesTransform
         "     █████     ",
         "     █▀█▀█     "
       };
-      mesh.AddUnit(new Cell(x - size * 7, y - 2.5 * size, color, background, () => new FastConsoleImplementation(skull_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
-      mesh.AddUnit(new Cell(x + size * 5, y - 2.5 * size, color, background, () => new ConsoleImplementation(skull_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
+      mesh.AddUnit(new Sprite(x - size * 7, y - 2.5 * size, color, background, () => new FastConsoleDevice(skull_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
+      mesh.AddUnit(new Sprite(x + size * 5, y - 2.5 * size, color, background, () => new ConsoleDevice(skull_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
 
       var mario_sprite = new [] { 
         "              ████████  ██████  ",
@@ -155,7 +154,7 @@ namespace CoordinatesTransform
         "██▓▓▓▓████              ██████  ",
         "  ████                          "
       };
-      mesh.AddUnit(new Cell(x, y, color, background, () => new ConsoleImplementation(mario_sprite))); // simple 1-sprite element
+      mesh.AddUnit(new Sprite(x, y, color, background, () => new ConsoleDevice(mario_sprite))); // simple 1-sprite element
 
       var foo = new [] { 
         @"        ",
@@ -169,8 +168,7 @@ namespace CoordinatesTransform
         @"        ",
         @"        ",
       };
-      //mesh.AddUnit(new Cell(0, 0, Color.Red, background, () => new ConsoleImplementation(foo)));
-
+      mesh.AddUnit(new Sprite(x, y - 27, Color.Black, background, () => new ConsoleDevice(foo)));
 
       return mesh;
     }

@@ -49,19 +49,19 @@
     <Compile Include="Patterns\BoxPatternFactory.cs" />
     <Compile Include="Patterns\PatternBox.cs" />
     <Compile Include="Graphics\ConsoleGraphicsFactory.cs" />
-    <Compile Include="Graphics\FastConsoleImplementation.cs" />
-    <Compile Include="Graphics\ConsoleImplementation.cs" />
     <Compile Include="Graphics\GraphicsFactory.cs" />
     <Compile Include="Exceptions\SizeException.cs" />
     <Compile Include="Graphics\Color.cs" />
-    <Compile Include="Units\Cell.cs" />
     <Compile Include="Units\CompositeUnit.cs" />
     <Compile Include="Units\Fill.cs" />
-    <Compile Include="Units\GameUnit.cs" />
-    <Compile Include="Units\GameUnitImplementation.cs" />
     <Compile Include="Units\InvalidateEventHandler.cs" />
     <Compile Include="Units\Mesh.cs" />
     <Compile Include="ConsoleHelpers.cs" />
+    <Compile Include="Units\GameUnit.cs" />
+    <Compile Include="Units\Device.cs" />
+    <Compile Include="Graphics\ConsoleDevice.cs" />
+    <Compile Include="Graphics\FastConsoleDevice.cs" />
+    <Compile Include="Units\Sprite.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

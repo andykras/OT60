@@ -3,9 +3,9 @@
 namespace TetrisModel
 {
   /// <summary>
-  /// Game unit implementation.
+  /// Game unit device
   /// </summary>
-  public interface GameUnitImplementation
+  public interface IDevice
   {
     int Width { get; }
     int Height { get; }

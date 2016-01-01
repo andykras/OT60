@@ -5,7 +5,7 @@ namespace TetrisModel
   /// <summary>
   /// Simple (plain) drawing - angle of sprite will be ignored
   /// </summary>
-  public class FastConsoleImplementation : GameUnitImplementation
+  public class FastConsoleDevice : IDevice
   {
     /// <summary>
     /// The sprite.
@@ -16,7 +16,7 @@ namespace TetrisModel
     /// Initializes a new instance of the <see cref="TetrisModel.FastConsoleImplementation"/> class.
     /// </summary>
     /// <param name="sprite">Sprite.</param>
-    public FastConsoleImplementation(params string[] sprite)
+    public FastConsoleDevice(params string[] sprite)
     {
       this.sprite = sprite;
       Height = sprite.Length; // число строк
@@ -32,7 +32,7 @@ namespace TetrisModel
     /// <param name="color">Color.</param>
     public void Draw(double x, double y, double angle, Color color)
     {
-      Console.ForegroundColor = (ConsoleColor) Enum.Parse(typeof(ConsoleColor), color.ToString());
+      Console.ForegroundColor = ConsoleHelpers.Convert(color);
 
       // transform coordinate system
       x = x + (int) Math.Floor(Console.WindowWidth * 0.5 - 1 + 0.5);

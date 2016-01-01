@@ -18,7 +18,6 @@ namespace TetrisModel
       BootLeft,
       BootRight,
       Box,
-      LastPattern
     }
 
     /// <summary>

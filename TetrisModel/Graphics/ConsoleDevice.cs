@@ -6,7 +6,7 @@ namespace TetrisModel
   /// <summary>
   /// Full sprite drawing implementation for Console
   /// </summary>
-  public class ConsoleImplementation : GameUnitImplementation
+  public class ConsoleDevice : IDevice
   {
     /// <summary>
     /// Coordinates which were eobtained from sprite
@@ -22,7 +22,7 @@ namespace TetrisModel
     /// Initializes a new instance of the <see cref="TetrisModel.ConsoleImplementation"/> class.
     /// </summary>
     /// <param name="sprite">Sprite.</param>
-    public ConsoleImplementation(params string[] sprite)
+    public ConsoleDevice(params string[] sprite)
     {
       this.sprite = sprite;
       var index = 0;
@@ -58,7 +58,7 @@ namespace TetrisModel
     /// <param name="color">Color.</param>
     public virtual void Draw(double x, double y, double angle, Color color)
     {
-      Console.ForegroundColor = (ConsoleColor) Enum.Parse(typeof(ConsoleColor), color.ToString());
+      Console.ForegroundColor = ConsoleHelpers.Convert(color);
 
       // transform coordinate system
       x = x + (int) Math.Floor(Console.WindowWidth * 0.5 - 1 + 0.5);

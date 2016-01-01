@@ -8,8 +8,8 @@ namespace TetrisModel
   /// </summary>
   public interface GraphicsFactory
   {
-    GameUnitImplementation CreateCellImplementation();
-    GameUnitImplementation CreateFillImplementation();
+    IDevice CreateCell();
+    IDevice CreateFill();
   }
 }
 

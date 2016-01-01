@@ -35,7 +35,6 @@ namespace TetrisModel
     /// <param name="color">Color.</param>
     public static void FillRect(int from, int to, int left, int right, ConsoleColor color)
     {
-      //Console.ForegroundColor = color;
       using (new SetBackground(color)) {
         for (var i = from; i < to; i++) {
           Console.SetCursorPosition(left, i);

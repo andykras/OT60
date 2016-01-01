@@ -24,24 +24,24 @@ namespace TetrisModel
       // todo: read all from settings
       //var sprite = Registry<Settings>.GetInstanceOf<TetrisSettings>().GetSprite();
       //var sprite = new[]{ "===", " . ", "===" };
-      cell = new ConsoleImplementation(new []{ "██", "██" });
-      fill = new ConsoleImplementation(new []{ "..", ".." });
+      cell = new ConsoleDevice(new []{ "██", "██" });
+      fill = new ConsoleDevice(new []{ "..", ".." });
 
       if (cell.Width != fill.Width || cell.Height != fill.Height) throw new SizeException("ConsoleGraphicsFactory: Size of cell and fill MUST BE THE SAME. Terminated");
     }
 
-    public GameUnitImplementation CreateCellImplementation()
+    public IDevice CreateCell()
     {
       return cell;
     }
 
-    public GameUnitImplementation CreateFillImplementation()
+    public IDevice CreateFill()
     {
       return fill;
     }
 
-    readonly GameUnitImplementation cell;
-    readonly GameUnitImplementation fill;
+    readonly IDevice cell;
+    readonly IDevice fill;
   }
 }
 

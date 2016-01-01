@@ -3,45 +3,52 @@ using System.Collections.Generic;
 
 namespace TetrisModel
 {
-  public abstract class CompositeUnit : GameUnit
+  public class CompositeUnit : GameUnit
   {
-    protected CompositeUnit(double x, double y) : base(x, y)
+    protected List<GameUnit> units = new List<GameUnit>();
+
+    public CompositeUnit(double x, double y) : base(x, y)
     {
-      units = new List<GameUnit>();
     }
 
-    public override void AddUnit(GameUnit unit)
+    public CompositeUnit() : this(0, 0)
+    {
+    }
+
+    public void AddUnit(GameUnit unit)
     {
       units.Add(unit);
     }
 
-    public override void RemoveUnit(GameUnit unit)
+    public void RemoveUnit(GameUnit unit)
     {
       units.Remove(unit);
     }
 
-    public override void Position(double xx, double yy, double a)
+    //    public override void Position(double xx, double yy, double a)
+    //    {
+    //      base.Position(xx, yy, a);
+    //      foreach (var unit in units) unit.Position(xx, yy, a);
+    //    }
+
+    public override void Position(double x, double y)
     {
-      base.Position(xx, yy, a);
-      foreach (var unit in units) unit.Position(xx, yy, a);
+      foreach (var unit in units) unit.Position(x, y);
     }
 
-    public override void Position(double xx, double yy)
+    public override void Rotate(double angle)
     {
-      base.Position(xx, yy);
-      foreach (var unit in units) unit.Position(xx, yy);
-    }
-
-    public override void Position(double a)
-    {
-      base.Position(a);
-      foreach (var unit in units) unit.Position(a);
+      foreach (var unit in units) unit.Rotate(angle);
     }
 
     public override void Rotate(int steps)
     {
-      base.Rotate(steps);
       foreach (var unit in units) unit.Rotate(steps);
+    }
+
+    public override void Move(int dx, int dy)
+    {
+      foreach (var unit in units) unit.Move(dx, dy);
     }
 
     public override void Draw()
@@ -53,14 +60,6 @@ namespace TetrisModel
     {
       foreach (var unit in units) unit.Clear();
     }
-
-    public override void Move(int dx, int dy)
-    {
-      base.Position(x + dx, y + dy);
-      foreach (var unit in units) unit.Move(dx, dy);
-    }
-
-    protected List<GameUnit> units;
   }
 }
 

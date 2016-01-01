@@ -12,6 +12,11 @@ namespace TetrisModel
     private int h;
     private int w;
 
+    public Pattern(byte[,] matrix = null)
+    {
+      Matrix = matrix;
+    }
+
     /// <summary>
     /// Equivalent coordinates of pattern
     /// </summary>
@@ -21,9 +26,10 @@ namespace TetrisModel
     /// Sets the matrix.
     /// </summary>
     /// <value>The matrix.</value>
-    protected byte[,] Matrix {
+    public byte[,] Matrix {
       set
       { 
+        if (value == null) return;
         var index = 0;
         h = value.GetLength(0);
         w = value.GetLength(1);
