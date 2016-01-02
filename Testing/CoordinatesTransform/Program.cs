@@ -6,6 +6,7 @@ using System.IO.IsolatedStorage;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using System.Reflection;
 
 namespace CoordinatesTransform
 {
@@ -21,7 +22,19 @@ namespace CoordinatesTransform
     /// </summary>
     const Color background = Color.Blue;
 
-    static bool needToClearScreen = false;
+    /// <summary>
+    /// Scene
+    /// </summary>
+    static GameUnit mesh;
+
+    static GameUnit about;
+    static GameUnit help;
+
+    static bool toggleHelp = true;
+    static bool toggleAbout = false;
+
+    static int ang = 0;
+    static int step = 2;
 
     /// <summary>
     /// Consoles the resize event.
@@ -30,7 +43,9 @@ namespace CoordinatesTransform
     /// <param name="width">Width.</param>
     static void ConsoleResizeEvent(int height, int width)
     {
-      needToClearScreen = true;
+      about = CreateAbout(width);
+      help = CreateHelp();
+      ClearScreen();
     }
 
     /// <summary>
@@ -56,53 +71,54 @@ namespace CoordinatesTransform
         }
       }){ IsBackground = true }.Start();
 
+      mesh = CreateMesh();
+      about = CreateAbout(Console.WindowWidth);
+      help = CreateHelp();
       ClearScreen();
 
-      var mesh = CreateMesh();
-      var ang = 0;
-      var step = 2;
-      var togglehelp = true;
       while (true) {
-        while (Console.KeyAvailable == false) {
+        info(ang, step);
+        if (toggleHelp)
+          help.Draw();
+        if (toggleAbout)
+          about.Draw();
+        var key = Console.ReadKey(false).Key;
+        if (key == ConsoleKey.F1) {
+          toggleAbout = !toggleAbout;
+          about.Clear();
           mesh.Draw();
-          info(ang, step);
-          if (togglehelp) help();
-          if (needToClearScreen) {
-            needToClearScreen = false;
-            ClearScreen();
-          }
-          Thread.Sleep(25);
         }
-        mesh.Clear();
-        var key = Console.ReadKey(true).Key;
+        if (key == ConsoleKey.H) {
+          toggleHelp = !toggleHelp;
+          help.Clear();
+          mesh.Draw();
+        }
         if (key == ConsoleKey.Escape) break;
         if (key == ConsoleKey.LeftArrow) mesh.Move(-step, 0);
         if (key == ConsoleKey.RightArrow) mesh.Move(step, 0);
         if (key == ConsoleKey.UpArrow) mesh.Move(0, step);
         if (key == ConsoleKey.DownArrow) mesh.Move(0, -step);
-        if (key == ConsoleKey.R) mesh.Rotate(0);
         if (key == ConsoleKey.E) mesh.Rotate(Math.PI / 12 * ++ang);
         if (key == ConsoleKey.W) mesh.Rotate(Math.PI / 12 * --ang);
         if (key == ConsoleKey.S) {
-          ClearScreen();
-          mesh = CreateMesh();
           ang = 0;
           step = 2;
+          mesh = CreateMesh();
+          about = CreateAbout(Console.WindowWidth);
+          help = CreateHelp();
+          ClearScreen();
         }
         if (key == ConsoleKey.Subtract && step > 1) step--;
         if (key == ConsoleKey.Add) step++;
-        if (key == ConsoleKey.H) {
-          togglehelp = !togglehelp;
-          ClearScreen();
-        }
       }
+      Console.SetCursorPosition(0, 0);
     }
 
     /// <summary>
     /// Creates the mesh.
     /// </summary>
     /// <returns>The mesh.</returns>
-    static CompositeUnit CreateMesh()
+    static GameUnit CreateMesh()
     {
       const int size = 7;
       var str = new string('■', size);
@@ -173,27 +189,46 @@ namespace CoordinatesTransform
       return mesh;
     }
 
+    static GameUnit CreateAbout(int width)
+    {
+      var text = new [] { 
+        "         Coordinate Transform Test",
+        "", 
+        "Rotate and move scene as much as you can.",
+        "andykras (c) 2015-2016",
+        "                          OT60 unit tests"
+      };
+      var about = new ConsoleWindow(width - 50, 5, background, text, Color.White, Color.DarkBlue, Color.Black, Color.Gray);
+      return about;
+    }
+
+    static GameUnit CreateHelp()
+    {
+      var text = new [] {
+        "H                     - Toggle this Help",
+        "F1                    - Show About",
+        "Esc                   - Exit",
+        "Left, Right, Up, Down - Move",
+        "W,E                   - Rotate",
+        "S                     - Restart",
+        "Plus|Minus            - Increase|Decrease Step",
+      };
+      var help = new ConsoleWindow(background, text);
+      return help;
+    }
+
     /// <summary>
     /// Fill screen
     /// </summary>
     static void ClearScreen()
     {
       ConsoleHelpers.FillRect(0, Console.WindowHeight, 0, Console.WindowWidth, ConsoleHelpers.Convert(background));
-    }
-
-    /// <summary>
-    /// Help text.
-    /// </summary>
-    static void help()
-    {
-      ConsoleHelpers.DrawWindow(new [] {
-        "Esc                   - Exit",
-        "Left, Right, Up, Down - Move",
-        "W,E or R              - Rotate",
-        "S                     - Restart",
-        "Plus|Minus            - Increase|Decrease Step",
-        "H                     - Toggle Help"
-      });
+      mesh.Draw();
+      if (toggleHelp)
+        help.Draw();
+      if (toggleAbout)
+        about.Draw();
+      info(ang, step);
     }
 
     static void info(int ang, int step)

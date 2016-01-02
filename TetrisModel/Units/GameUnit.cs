@@ -25,8 +25,6 @@ namespace TetrisModel
     /// </summary>
     public abstract void Clear();
 
-    public event InvalidateEventHandler Invalidate;
-
     /// <summary>
     /// Set Position at the (x,y)
     /// </summary>
@@ -40,11 +38,11 @@ namespace TetrisModel
     /// <param name="angle">Angle</param>
     public abstract void Rotate(double angle);
 
-    /// <summary>
-    /// Rotate the specified steps
-    /// </summary>
-    /// <param name="steps">Steps to rotate</param>
-    public abstract void Rotate(int steps);
+    //    /// <summary>
+    //    /// Rotate the specified steps
+    //    /// </summary>
+    //    /// <param name="steps">Steps to rotate</param>
+    //    public abstract void Rotate(int steps);
 
     /// <summary>
     /// Move at the delta

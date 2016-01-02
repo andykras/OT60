@@ -7,17 +7,20 @@ namespace TetrisModel
   /// </summary>
   public class Sprite : GameUnit
   {
-    public static bool RefDot = true;
+    //    public event InvalidateEventHandler Invalidate;
+
+    public static bool refDot = true;
 
     public double Width { get { return device.Width; } }
 
-    private int state;
+    //    private int state;
     private Color color;
     private Color background;
     private IDevice device;
     protected Pattern pattern;
 
-    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator, Func<Pattern> patternCreator) : base(x, y)
+    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator, Func<Pattern> patternCreator) :
+      base(x, y)
     {
       device = deviceCreator();
       pattern = patternCreator();
@@ -25,22 +28,27 @@ namespace TetrisModel
       background = b;
     }
 
-    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator, PatternFactory patternFactory) : this(x, y, c, b, deviceCreator, patternFactory.CreatePattern)
+    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator, PatternFactory patternFactory) :
+      this(x, y, c, b, deviceCreator, patternFactory.CreatePattern)
     {
     }
 
-    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator) : this(x, y, c, b, deviceCreator, Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>())
+    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator) :
+      this(x, y, c, b, deviceCreator, Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>())
     {
     }
 
-    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator, Func<Pattern> patternCreator) : this(x, y, c, Color.Black, deviceCreator, patternCreator)
+    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator, Func<Pattern> patternCreator) :
+      this(x, y, c, Color.Black, deviceCreator, patternCreator)
     {
     }
-    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator, PatternFactory patternFactory) : this(x, y, c, Color.Black, deviceCreator, patternFactory)
+    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator, PatternFactory patternFactory) :
+      this(x, y, c, Color.Black, deviceCreator, patternFactory)
     {
     }
 
-    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator) : this(x, y, c, Color.Black, deviceCreator)
+    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator) :
+      this(x, y, c, Color.Black, deviceCreator)
     {
     }
 
@@ -68,7 +76,7 @@ namespace TetrisModel
       }
 
       // draw reference point, for _DEBUG_ purpose
-      if (RefDot) {
+      if (refDot) {
         Console.ForegroundColor = color == background ? ConsoleHelpers.Convert(background) : ConsoleColor.Red;
         var xr = x + (int) Math.Floor(Console.WindowWidth * 0.5 - 1 + 0.5);
         var yr = -y + (int) Math.Floor(Console.WindowHeight * 0.5 - 1 + 0.5);
@@ -91,38 +99,41 @@ namespace TetrisModel
     //      return angle / Math.PI * 180;
     //    }
 
-    //    public virtual void Position(double xx, double yy, double a)
-    //    {
-    //      x = xx;
-    //      y = yy;
-    //      angle = a;
-    //      if (Invalidate != null) Invalidate();
-    //    }
 
     public override void Position(double x, double y)
     {
-      this.x = x;
-      this.y = y;
-      //Position(xx, yy, angle);
+//      this.x = x;
+//      this.y = y;
+      Update(x, y, angle);
     }
 
     public override void Rotate(double angle)
     {
-      this.angle = angle;
-      //Position(x, y, a);
+      //this.angle = angle;
+      Update(x, y, angle);
     }
 
-    public override void Rotate(int steps)
-    {
-      if (++state > 3) state = 0;
-      const double step = 0.5 * Math.PI; // шаг в 90˚͋
-      for (var k = 1; k < steps; k++) Rotate((state - 1) * step + (steps == 0 ? step : step / steps) * k);
-      Rotate(state * step);
-    }
+    //    public override void Rotate(int steps)
+    //    {
+    //      if (++state > 3) state = 0;
+    //      const double step = 0.5 * Math.PI; // шаг в 90˚͋
+    //      for (var k = 1; k < steps; k++) Rotate((state - 1) * step + (steps == 0 ? step : step / steps) * k);
+    //      Rotate(state * step);
+    //    }
 
     public override void Move(int dx, int dy)
     {
       Position(x + dx, y + dy);
+    }
+
+    private void Update(double x, double y, double angle)
+    {
+      Clear();
+      this.x = x;
+      this.y = y;
+      this.angle = angle;
+      Draw();
+      //if (Invalidate != null) Invalidate();
     }
 
   }

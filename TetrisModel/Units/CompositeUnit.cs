@@ -7,11 +7,13 @@ namespace TetrisModel
   {
     protected List<GameUnit> units = new List<GameUnit>();
 
-    public CompositeUnit(double x, double y) : base(x, y)
+    public CompositeUnit(double x, double y) :
+      base(x, y)
     {
     }
 
-    public CompositeUnit() : this(0, 0)
+    public CompositeUnit() :
+      this(0, 0)
     {
     }
 
@@ -41,10 +43,10 @@ namespace TetrisModel
       foreach (var unit in units) unit.Rotate(angle);
     }
 
-    public override void Rotate(int steps)
-    {
-      foreach (var unit in units) unit.Rotate(steps);
-    }
+    //    public override void Rotate(int steps)
+    //    {
+    //      foreach (var unit in units) unit.Rotate(steps);
+    //    }
 
     public override void Move(int dx, int dy)
     {

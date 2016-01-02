@@ -60,7 +60,6 @@ Global
 		$2.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $3
 		$3.IndentSwitchBody = True
-		$3.AlignEmbeddedStatements = False
 		$3.SimplePropertyFormatting = ForceOneLine
 		$3.AutoPropertyFormatting = ForceOneLine
 		$3.AnonymousMethodBraceStyle = NextLine
@@ -70,15 +69,19 @@ Global
 		$3.SimpleSetBlockFormatting = ForceOneLine
 		$3.EventAddBraceStyle = NextLine
 		$3.EventRemoveBraceStyle = NextLine
-		$3.EmbeddedStatementPlacement = SameLine
+		$3.ElseNewLinePlacement = NewLine
+		$3.CatchNewLinePlacement = NewLine
+		$3.FinallyNewLinePlacement = NewLine
+		$3.EmbeddedStatementPlacement = DoNotCare
 		$3.ArrayInitializerWrapping = DoNotChange
 		$3.BeforeMethodDeclarationParentheses = False
 		$3.BeforeMethodCallParentheses = False
 		$3.BeforeConstructorDeclarationParentheses = False
 		$3.NewLineBeforeConstructorInitializerColon = SameLine
-		$3.NewLineAfterConstructorInitializerColon = SameLine
+		$3.NewLineAfterConstructorInitializerColon = NewLine
 		$3.BeforeIndexerDeclarationBracket = False
 		$3.BeforeDelegateDeclarationParentheses = False
+		$3.AfterDelegateDeclarationParameterComma = True
 		$3.NewParentheses = False
 		$3.AroundShiftOperatorParentheses = False
 		$3.SpacesBeforeBrackets = False
@@ -94,7 +97,8 @@ Global
 		$3.scope = text/x-csharp
 		$0.TextStylePolicy = $4
 		$4.FileWidth = 120
-		$4.TabsToSpaces = False
+		$4.TabWidth = 2
+		$4.IndentWidth = 2
 		$4.inheritsSet = VisualStudio
 		$4.inheritsScope = text/plain
 		$4.scope = text/plain
@@ -171,7 +175,7 @@ Global
 		$20.Name = Fields
 		$20.AffectedEntity = Field
 		$20.VisibilityMask = Protected, Public
-		$20.NamingStyle = PascalCase
+		$20.NamingStyle = CamelCase
 		$20.IncludeInstanceMembers = True
 		$20.IncludeStaticEntities = True
 		$7.NamingRule = $21
@@ -185,7 +189,7 @@ Global
 		$22.Name = Constant Fields
 		$22.AffectedEntity = ConstantField
 		$22.VisibilityMask = Protected, Public
-		$22.NamingStyle = PascalCase
+		$22.NamingStyle = AllUpper
 		$22.IncludeInstanceMembers = True
 		$22.IncludeStaticEntities = True
 		$7.NamingRule = $23

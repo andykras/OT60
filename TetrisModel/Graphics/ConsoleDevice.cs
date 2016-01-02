@@ -19,7 +19,7 @@ namespace TetrisModel
     private readonly string[] sprite;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TetrisModel.ConsoleImplementation"/> class.
+    /// Initializes a new instance of the <see cref="TetrisModel.ConsoleDevice"/> class.
     /// </summary>
     /// <param name="sprite">Sprite.</param>
     public ConsoleDevice(params string[] sprite)

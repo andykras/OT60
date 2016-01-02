@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using TetrisModel;
 
 namespace DrawingSpeed
 {
@@ -15,11 +17,41 @@ namespace DrawingSpeed
       // для main взять последний код с потоками! - OriginalTetris Program.cs
 
 
-      const double foo = 1.0;
-      var bar = foo; 
-
-      Console.Write("Test{0}", args.Length);
-      Console.ReadKey();
+      while (true) {
+        while (Console.KeyAvailable == false) {
+//        mesh.Draw();
+//        info(ang, step);
+//        if (togglehelp)
+//          help();
+//        if (needToClearScreen) {
+//          needToClearScreen = false;
+//          ClearScreen();
+//        }
+          Thread.Sleep(25);
+        }
+        var key = Console.ReadKey(true).Key;
+//        mesh.Clear();
+//        if (key == ConsoleKey.Escape) break;
+//        if (key == ConsoleKey.LeftArrow) mesh.Move(-step, 0);
+//        if (key == ConsoleKey.RightArrow) mesh.Move(step, 0);
+//        if (key == ConsoleKey.UpArrow) mesh.Move(0, step);
+//        if (key == ConsoleKey.DownArrow) mesh.Move(0, -step);
+//        if (key == ConsoleKey.E) mesh.Rotate(Math.PI / 12 * ++ang);
+//        if (key == ConsoleKey.W) mesh.Rotate(Math.PI / 12 * --ang);
+//        if (key == ConsoleKey.S) {
+//          ClearScreen();
+//          mesh = CreateMesh();
+//          ang = 0;
+//          step = 2;
+//        }
+//        if (key == ConsoleKey.Subtract && step > 1) step--;
+//        if (key == ConsoleKey.Add) step++;
+//        if (key == ConsoleKey.H) {
+//          togglehelp = !togglehelp;
+//          ClearScreen();
+//        }
+//      }
+      }
     }
   }
 }

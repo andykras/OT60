@@ -62,6 +62,7 @@
     <Compile Include="Graphics\ConsoleDevice.cs" />
     <Compile Include="Graphics\FastConsoleDevice.cs" />
     <Compile Include="Units\Sprite.cs" />
+    <Compile Include="Units\ConsoleWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

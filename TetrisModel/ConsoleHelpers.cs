@@ -36,9 +36,10 @@ namespace TetrisModel
     public static void FillRect(int from, int to, int left, int right, ConsoleColor color)
     {
       using (new SetBackground(color)) {
+        var wipe = new String(' ', right - left);
         for (var i = from; i < to; i++) {
           Console.SetCursorPosition(left, i);
-          Console.Write(new String(' ', right - left));
+          Console.Write(wipe);
         }
       }
     }
@@ -48,12 +49,12 @@ namespace TetrisModel
     /// </summary>
     /// <param name="text">Text.</param>
     /// <param name="margin">Margin.</param>
-    public static void DrawWindow(string[] text, int margin = 1)
+    public static void DrawWindow(string[] text, int margin = 1, int width = -1, ConsoleColor color = ConsoleColor.Black, ConsoleColor background = ConsoleColor.DarkCyan, bool drawShadow = true, ConsoleColor shadowColor = ConsoleColor.Black, ConsoleColor borderColor = ConsoleColor.White)
     {
-      var width = GetMaxWidth(text) + 2 * margin;
-      var x = Console.WindowWidth / 2 - width / 2;
+      var w = GetMaxWidth(text) + 2 * margin;
+      var x = Console.WindowWidth / 2 - w / 2;
       var y = Console.WindowHeight / 4 - text.Length / 2;
-      DrawWindow(x, y, text, margin);
+      DrawWindow(x, y, text, margin, width, color, background, drawShadow, shadowColor, borderColor);
     }
 
     /// <summary>
@@ -67,16 +68,18 @@ namespace TetrisModel
     /// <param name = "color"></param>
     /// <param name = "background"></param>
     /// <param name = "drawShadow"></param>
-    public static void DrawWindow(int x, int y, string[] text, int margin = 1, int width = -1, ConsoleColor color = ConsoleColor.Black, ConsoleColor background = ConsoleColor.DarkCyan, bool drawShadow = true)
+    /// <param name = "shadowColor"></param>
+    /// <param name = "borderColor"></param>
+    public static void DrawWindow(int x, int y, string[] text, int margin = 1, int width = -1, ConsoleColor color = ConsoleColor.Black, ConsoleColor background = ConsoleColor.DarkCyan, bool drawShadow = true, ConsoleColor shadowColor = ConsoleColor.Black, ConsoleColor borderColor = ConsoleColor.White)
     {
       var h = text.Length;
       var w = width;  
       if (w == -1) w = GetMaxWidth(text);
-      if (drawShadow) FillRect(y + 1, y + h + 1 + 2 * margin, x + 1, x + w + 1 + 2 * margin, ConsoleColor.Black);
+      if (drawShadow) FillRect(y + 1, y + h + 1 + 2 * margin, x + 1, x + w + 1 + 2 * margin, shadowColor);
       FillRect(y, y + h + 2 * margin, x, x + w + 2 * margin, background);
 
       using (new SetBackground(background)) {
-        DrawBorder(x, y, h, w, margin, ConsoleColor.White);
+        DrawBorder(x, y, h, w, margin, borderColor);
         PrintText(x + margin, y + margin, text, color);
       }
     }

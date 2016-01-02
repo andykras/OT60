@@ -12,7 +12,7 @@ namespace GameUnits
       try {
         // first method - creator
         // every unit has its own implementation, even if they're all the same
-        Sprite.RefDot = false;
+        Sprite.refDot = false;
         var x = -50;
         var submesh = new CompositeUnit();
         submesh.AddUnit(new Sprite(x, 10, Color.Blue, () => new FastConsoleDevice(
@@ -89,7 +89,8 @@ namespace GameUnits
           mesh.Draw();
         }
 
-      } catch (Exception ex) {
+      }
+      catch (Exception ex) {
         Console.WriteLine(ex.Data);
         Console.WriteLine(ex.Message);
         Console.WriteLine(ex.InnerException);

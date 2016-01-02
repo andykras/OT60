@@ -22,7 +22,8 @@ namespace TetrisModel
 
     private double angle = 0;
 
-    public Fill(double x, double y, int n, int m, Color c, Func<IDevice> deviceCreator) : base(x, y)
+    public Fill(double x, double y, int n, int m, Color c, Func<IDevice> deviceCreator) :
+      base(x, y)
     {
       color = c;
       N = n;
@@ -35,7 +36,8 @@ namespace TetrisModel
     }
 
 
-    public Fill(double x, double y, int n, int m, Color c, GraphicsFactory factory) : this(x, y, n, m, c, factory.CreateFill)
+    public Fill(double x, double y, int n, int m, Color c, GraphicsFactory factory) :
+      this(x, y, n, m, c, factory.CreateFill)
     {
     }
 
@@ -79,9 +81,6 @@ namespace TetrisModel
 
     //    public override void Rotate(int steps)
     //    {
-    //      this.steps = steps;
-    //      base.Rotate(steps);
-    //      //foreach (var unit in units) unit.Rotate(steps);
     //    }
 
     public override void Move(int dx, int dy)
