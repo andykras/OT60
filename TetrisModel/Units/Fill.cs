@@ -23,7 +23,7 @@ namespace TetrisModel
     private double angle = 0;
 
     public Fill(double x, double y, int n, int m, Color c, Func<IDevice> deviceCreator) :
-      base(x, y)
+      base(x, y, 0)
     {
       color = c;
       N = n;
@@ -31,7 +31,12 @@ namespace TetrisModel
       var tmp = deviceCreator();
       w = tmp.Width;
       h = tmp.Height;
-      for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) AddUnit(new Sprite(x + i * w, y + j * h, (Color) (1 + rnd.Next(15)), deviceCreator));
+      var pos = 1;
+      for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) {
+          if (pos > 15) pos = 1;
+          //AddUnit(new Sprite(deviceCreator, x + i * w, y + j * h, (Color) (1 + rnd.Next(15))));
+          AddUnit(new Sprite(deviceCreator, x + i * w, y + j * h, (Color) pos++));
+        }
       //for (var i = 0; i < N; i++) for (var j = 0; j < M; j++) AddUnit(new Cell(x + i * w, y + j * h, color, deviceCreator));
     }
 
@@ -63,29 +68,30 @@ namespace TetrisModel
         xnew = x + (xnew - x) * w;
         ynew = y + (ynew - y) * h;
     
-        unit.Position(xnew, ynew);
+        unit.Position(xnew, ynew, angle);
         unit.Draw();
       }
     }
 
-    public override void Position(double x, double y)
+    public override void Position(double x, double y, double angle)
     {
       this.x = x;
       this.y = y;
+      this.angle = angle;
     }
 
-    public override void Rotate(double angle)
+    public override void Rotate(double da)
     {
-      this.angle = angle;
+      this.angle += da;
     }
 
     //    public override void Rotate(int steps)
     //    {
     //    }
 
-    public override void Move(int dx, int dy)
+    public override void Move(double dx, double dy)
     {
-      Position(x + dx, y + dy);
+      Position(x + dx, y + dy, angle);
     }
 
   }

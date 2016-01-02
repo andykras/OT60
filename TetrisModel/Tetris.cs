@@ -8,12 +8,12 @@ namespace TetrisModel
     {
     }
   
-    public void AddUnit(GameUnit unit)
+    public void AddUnit(IGameUnit unit)
     {
 
     }
 
-    public GameUnit Get(int no)
+    public IGameUnit Get(int no)
     {
       return null;
     }

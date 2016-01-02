@@ -5,7 +5,7 @@ namespace TetrisModel
   /// <summary>
   /// about 
   /// </summary>
-  public class ConsoleWindow:GameUnit
+  public class ConsoleWindow:IGameUnit
   {
     private ConsoleColor b;
     private ConsoleColor color;
@@ -16,9 +16,16 @@ namespace TetrisModel
     private bool useCoord = true;
     private bool useNativeColor = false;
 
-    public ConsoleWindow(double x, double y, Color b, string[] text, Color color, Color ground, Color shadow, Color border) :
-      base(x, y)
+    private double x;
+    private double y;
+
+    public double Angle { get { return 0; } }
+
+
+    public ConsoleWindow(double x, double y, Color b, string[] text, Color color, Color ground, Color shadow, Color border)
     {
+      this.x = x;
+      this.y = y;
       this.b = ConsoleHelpers.Convert(b);
       this.color = ConsoleHelpers.Convert(color);
       this.ground = ConsoleHelpers.Convert(ground);
@@ -27,8 +34,7 @@ namespace TetrisModel
       this.text = text;
     }
 
-    public ConsoleWindow(Color b, string[] text) :
-      base(0, 0)
+    public ConsoleWindow(Color b, string[] text)
     {
       this.b = ConsoleHelpers.Convert(b);
       this.text = text;
@@ -36,7 +42,7 @@ namespace TetrisModel
       useNativeColor = true;
     }
 
-    public override void Draw()
+    public void Draw()
     {
       if (!useNativeColor) {
         if (useCoord)
@@ -52,24 +58,30 @@ namespace TetrisModel
       }
     }
 
-    public override void Clear()
-    {
-      if (useCoord)
-        ConsoleHelpers.DrawWindow((int) x, (int) y, text, 1, -1, b, b, true, b, b);
-      else
-        ConsoleHelpers.DrawWindow(text, 1, -1, b, b, true, b, b);
-    }
+    //    public void Clear()
+    //    {
+    //      if (useCoord)
+    //        ConsoleHelpers.DrawWindow((int) x, (int) y, text, 1, -1, b, b, true, b, b);
+    //      else
+    //        ConsoleHelpers.DrawWindow(text, 1, -1, b, b, true, b, b);
+    //    }
 
-    public override void Position(double x, double y)
+    public event InvalidateEventHandler InvalidateEvent;
+    public void Position(double x, double y, double angle)
     {
+      throw new NotImplementedException();
     }
-
-    public override void Rotate(double angle)
+    public void Rotate(double da)
     {
+      throw new NotImplementedException();
     }
-
-    public override void Move(int dx, int dy)
+    public void Move(double dx, double dy)
     {
+      throw new NotImplementedException();
+    }
+    public void SetColor(Color color)
+    {
+      throw new NotImplementedException();
     }
   }
   

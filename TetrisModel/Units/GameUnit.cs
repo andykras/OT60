@@ -2,41 +2,35 @@
 
 namespace TetrisModel
 {
-  public abstract class GameUnit
+  public interface IGameUnit
   {
-    protected double x;
-    protected double y;
-    protected double angle;
+    event InvalidateEventHandler InvalidateEvent;
 
-    protected GameUnit(double x, double y)
-    {
-      this.x = x;
-      this.y = y;
-      angle = 0;
-    }
+    double Angle { get; }
 
     /// <summary>
     /// Draw this unit
     /// </summary>
-    public abstract void Draw();
+    void Draw();
+
+    //    /// <summary>
+    //    /// Clear this unit
+    //    /// </summary>
+    //    public abstract void Clear();
 
     /// <summary>
-    /// Clear this unit
-    /// </summary>
-    public abstract void Clear();
-
-    /// <summary>
-    /// Set Position at the (x,y)
+    /// Set Position at the (x,y,a)
     /// </summary>
     /// <param name="x">x coord</param>
     /// <param name="y">y coord</param>
-    public abstract void Position(double x, double y);
+    /// <param name = "angle"></param>
+    void Position(double x, double y, double angle);
 
     /// <summary>
     /// Rotate at the angle
     /// </summary>
-    /// <param name="angle">Angle</param>
-    public abstract void Rotate(double angle);
+    /// <param name="da">delta angle</param>
+    void Rotate(double da);
 
     //    /// <summary>
     //    /// Rotate the specified steps
@@ -49,7 +43,13 @@ namespace TetrisModel
     /// </summary>
     /// <param name="dx">delta x</param>
     /// <param name="dy">delta y</param>
-    public abstract void Move(int dx, int dy);
+    void Move(double dx, double dy);
+
+    /// <summary>
+    /// Change color
+    /// </summary>
+    /// <param name="color">Color</param>
+    void SetColor(Color color);
   }
 }
 

@@ -25,10 +25,10 @@ namespace CoordinatesTransform
     /// <summary>
     /// Scene
     /// </summary>
-    static GameUnit mesh;
+    static IGameUnit mesh;
 
-    static GameUnit about;
-    static GameUnit help;
+    static IGameUnit about;
+    static IGameUnit help;
 
     static bool toggleHelp = true;
     static bool toggleAbout = false;
@@ -76,31 +76,35 @@ namespace CoordinatesTransform
       help = CreateHelp();
       ClearScreen();
 
+      mesh.InvalidateEvent += Update;
+
       while (true) {
-        info(ang, step);
+        info(step);
         if (toggleHelp)
           help.Draw();
         if (toggleAbout)
           about.Draw();
         var key = Console.ReadKey(false).Key;
-        if (key == ConsoleKey.F1) {
+        ConsoleHelpers.FillRect(Console.BackgroundColor);
+
+        if (key == ConsoleKey.F1 || key == ConsoleKey.F) {
           toggleAbout = !toggleAbout;
-          about.Clear();
+//          about.Clear();
           mesh.Draw();
         }
         if (key == ConsoleKey.H) {
           toggleHelp = !toggleHelp;
-          help.Clear();
+//          help.Clear();
           mesh.Draw();
         }
         if (key == ConsoleKey.Escape) break;
-        if (key == ConsoleKey.LeftArrow) mesh.Move(-step, 0);
-        if (key == ConsoleKey.RightArrow) mesh.Move(step, 0);
-        if (key == ConsoleKey.UpArrow) mesh.Move(0, step);
-        if (key == ConsoleKey.DownArrow) mesh.Move(0, -step);
-        if (key == ConsoleKey.E) mesh.Rotate(Math.PI / 12 * ++ang);
-        if (key == ConsoleKey.W) mesh.Rotate(Math.PI / 12 * --ang);
-        if (key == ConsoleKey.S) {
+        else if (key == ConsoleKey.LeftArrow) mesh.Move(-step, 0);
+        else if (key == ConsoleKey.RightArrow) mesh.Move(step, 0);
+        else if (key == ConsoleKey.UpArrow) mesh.Move(0, step);
+        else if (key == ConsoleKey.DownArrow) mesh.Move(0, -step);
+        else if (key == ConsoleKey.E) mesh.Rotate(Math.PI / 12);
+        else if (key == ConsoleKey.W) mesh.Rotate(-Math.PI / 12);
+        else if (key == ConsoleKey.S) {
           ang = 0;
           step = 2;
           mesh = CreateMesh();
@@ -108,17 +112,31 @@ namespace CoordinatesTransform
           help = CreateHelp();
           ClearScreen();
         }
-        if (key == ConsoleKey.Subtract && step > 1) step--;
-        if (key == ConsoleKey.Add) step++;
+        else if (key == ConsoleKey.Subtract && step > 1) {
+          step--;
+          mesh.Draw();
+        }
+        else if (key == ConsoleKey.Add) {
+          step++;
+          mesh.Draw();
+        }
+        else {
+          mesh.Draw();
+        }
       }
       Console.SetCursorPosition(0, 0);
+    }
+
+    static void Update()
+    {
+      mesh.Draw();
     }
 
     /// <summary>
     /// Creates the mesh.
     /// </summary>
     /// <returns>The mesh.</returns>
-    static GameUnit CreateMesh()
+    static IGameUnit CreateMesh()
     {
       const int size = 7;
       var str = new string('■', size);
@@ -128,19 +146,19 @@ namespace CoordinatesTransform
       var x = -size * 1.5;
       var y = size * 1.5;
       var mesh = new CompositeUnit();
-      mesh.AddUnit(new Sprite(x - size * 5, y + 0.5 * size, color, background, () => new FastConsoleDevice(fill_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
-      mesh.AddUnit(new Sprite(x + size * 5, y + 0.5 * size, color, background, () => new ConsoleDevice(fill_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
-      mesh.AddUnit(new Sprite(x + 2 * size * 5, y, color, background, () => new ConsoleDevice("█", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "█")));
+      mesh.AddUnit(new Sprite(() => new FastConsoleDevice(fill_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), x - size * 5, y + 0.5 * size, color));
+      mesh.AddUnit(new Sprite(() => new ConsoleDevice(fill_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), x + size * 5, y + 0.5 * size, color));
+      mesh.AddUnit(new Sprite(() => new ConsoleDevice("█", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "█"), x + 2 * size * 5, y, color));
 
-      var skull_sprite = new [] { 
-        "    ▄▄▄▄▄▄▄    ", 
+      var skull_sprite = new [] {
+        "    ▄▄▄▄▄▄▄    ",
         "▀█████████████▀",
         "    █▄███▄█    ",
         "     █████     ",
         "     █▀█▀█     "
       };
-      mesh.AddUnit(new Sprite(x - size * 7, y - 2.5 * size, color, background, () => new FastConsoleDevice(skull_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
-      mesh.AddUnit(new Sprite(x + size * 5, y - 2.5 * size, color, background, () => new ConsoleDevice(skull_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>()));
+      mesh.AddUnit(new Sprite(() => new FastConsoleDevice(skull_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), x - size * 7, y - 2.5 * size, color));
+      mesh.AddUnit(new Sprite(() => new ConsoleDevice(skull_sprite), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), x + size * 5, y - 2.5 * size, color));
 
       var mario_sprite = new [] { 
         "              ████████  ██████  ",
@@ -170,7 +188,7 @@ namespace CoordinatesTransform
         "██▓▓▓▓████              ██████  ",
         "  ████                          "
       };
-      mesh.AddUnit(new Sprite(x, y, color, background, () => new ConsoleDevice(mario_sprite))); // simple 1-sprite element
+      mesh.AddUnit(new Sprite(() => new ConsoleDevice(mario_sprite), x, y, color)); // simple 1-sprite element
 
       var foo = new [] { 
         @"        ",
@@ -184,16 +202,16 @@ namespace CoordinatesTransform
         @"        ",
         @"        ",
       };
-      mesh.AddUnit(new Sprite(x, y - 27, Color.Black, background, () => new ConsoleDevice(foo)));
+      mesh.AddUnit(new Sprite(() => new ConsoleDevice(foo), x, y - 27, Color.Black));
 
       return mesh;
     }
 
-    static GameUnit CreateAbout(int width)
+    static IGameUnit CreateAbout(int width)
     {
       var text = new [] { 
         "         Coordinate Transform Test",
-        "", 
+        "",
         "Rotate and move scene as much as you can.",
         "andykras (c) 2015-2016",
         "                          OT60 unit tests"
@@ -202,7 +220,7 @@ namespace CoordinatesTransform
       return about;
     }
 
-    static GameUnit CreateHelp()
+    static IGameUnit CreateHelp()
     {
       var text = new [] {
         "H                     - Toggle this Help",
@@ -228,12 +246,12 @@ namespace CoordinatesTransform
         help.Draw();
       if (toggleAbout)
         about.Draw();
-      info(ang, step);
+      info(step);
     }
 
-    static void info(int ang, int step)
+    static void info(int step)
     {
-      ConsoleHelpers.DrawWindow(0, 0, new[]{ String.Format("angle: {0}, step: {1}", ang / 12.0 * 180, step) }, 0, Console.WindowWidth, ConsoleColor.White, ConsoleColor.DarkRed, false);
+      ConsoleHelpers.DrawWindow(0, 0, new[]{ String.Format("angle: {0}, step: {1}", 180 * mesh.Angle / Math.PI, step) }, 0, Console.WindowWidth, ConsoleColor.White, ConsoleColor.DarkRed, false);
     }
   }
 }

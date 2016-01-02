@@ -7,12 +7,12 @@ namespace TetrisModel
   /// <summary>
   /// Pattern
   /// </summary>
-  public class Pattern : IEnumerable<byte>
+  public class Pattern : IEnumerable<ushort>
   {
     private int h;
     private int w;
 
-    public Pattern(byte[,] matrix = null)
+    public Pattern(ushort[,] matrix = null)
     {
       Matrix = matrix;
     }
@@ -20,22 +20,22 @@ namespace TetrisModel
     /// <summary>
     /// Equivalent coordinates of pattern
     /// </summary>
-    private List<byte> coords;
+    private List<ushort> coords;
 
     /// <summary>
     /// Sets the matrix.
     /// </summary>
     /// <value>The matrix.</value>
-    public byte[,] Matrix {
+    public ushort[,] Matrix {
       set
       { 
         if (value == null) return;
         var index = 0;
         h = value.GetLength(0);
         w = value.GetLength(1);
-        coords = new List<byte>(w * h);
+        coords = new List<ushort>(w * h);
         foreach (var v in value) {
-          if (v != 0) coords.Add((byte) (index + 1));
+          if (v != 0) coords.Add((ushort) (index + 1));
           index++;
         }
       }
@@ -57,7 +57,7 @@ namespace TetrisModel
     /// Enumerator
     /// </summary>
     /// <returns>The enumerator.</returns>
-    public IEnumerator<byte> GetEnumerator()
+    public IEnumerator<ushort> GetEnumerator()
     {
       foreach (var position in coords) yield return position;
     }

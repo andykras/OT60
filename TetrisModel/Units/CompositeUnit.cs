@@ -1,28 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 
 namespace TetrisModel
 {
-  public class CompositeUnit : GameUnit
+  public class CompositeUnit : IGameUnit
   {
-    protected List<GameUnit> units = new List<GameUnit>();
+    public event InvalidateEventHandler InvalidateEvent;
 
-    public CompositeUnit(double x, double y) :
-      base(x, y)
+    protected List<IGameUnit> units = new List<IGameUnit>();
+
+    protected double x;
+    protected double y;
+    protected double angle;
+
+    public double Angle { get { return angle; } }
+
+    public CompositeUnit(double x, double y, double angle)
     {
+      this.x = x;
+      this.y = y;
+      this.angle = angle;
     }
 
     public CompositeUnit() :
-      this(0, 0)
+      this(0, 0, 0)
     {
     }
 
-    public void AddUnit(GameUnit unit)
+    public void AddUnit(IGameUnit unit)
     {
       units.Add(unit);
     }
 
-    public void RemoveUnit(GameUnit unit)
+    public void RemoveUnit(IGameUnit unit)
     {
       units.Remove(unit);
     }
@@ -33,14 +44,26 @@ namespace TetrisModel
     //      foreach (var unit in units) unit.Position(xx, yy, a);
     //    }
 
-    public override void Position(double x, double y)
+    public virtual void Position(double x, double y, double angle)
     {
-      foreach (var unit in units) unit.Position(x, y);
+      var da = angle - this.angle;
+      var dx = x - this.x;
+      var dy = y - this.y;
+      foreach (var unit in units) {
+        unit.Rotate(da);
+        unit.Move(dx, dy);
+      }
+      this.angle = angle;
+      this.x = x;
+      this.y = y;
+      if (InvalidateEvent != null) InvalidateEvent();
     }
 
-    public override void Rotate(double angle)
+    public virtual void Rotate(double da)
     {
-      foreach (var unit in units) unit.Rotate(angle);
+      this.angle += da;
+      foreach (var unit in units) unit.Rotate(da);
+      if (InvalidateEvent != null) InvalidateEvent();
     }
 
     //    public override void Rotate(int steps)
@@ -48,19 +71,27 @@ namespace TetrisModel
     //      foreach (var unit in units) unit.Rotate(steps);
     //    }
 
-    public override void Move(int dx, int dy)
+    public virtual void Move(double dx, double dy)
     {
+      this.x += dx;
+      this.y += dy;
       foreach (var unit in units) unit.Move(dx, dy);
+      if (InvalidateEvent != null) InvalidateEvent();
     }
 
-    public override void Draw()
+    public virtual void Draw()
     {
       foreach (var unit in units) unit.Draw();
     }
 
-    public override void Clear()
+    //    public override void Clear()
+    //    {
+    //      foreach (var unit in units) unit.Clear();
+    //    }
+
+    public void SetColor(Color color)
     {
-      foreach (var unit in units) unit.Clear();
+      throw new NotImplementedException();
     }
   }
 }

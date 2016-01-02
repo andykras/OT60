@@ -33,7 +33,7 @@ namespace TetrisModel
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
     /// <param name="color">Color.</param>
-    public static void FillRect(int from, int to, int left, int right, ConsoleColor color)
+    public static void FillRect(int from, int to, int left, int right, ConsoleColor color = ConsoleColor.Black)
     {
       using (new SetBackground(color)) {
         var wipe = new String(' ', right - left);
@@ -42,6 +42,11 @@ namespace TetrisModel
           Console.Write(wipe);
         }
       }
+    }
+
+    public static void FillRect(ConsoleColor color = ConsoleColor.Black)
+    {
+      FillRect(0, Console.WindowHeight, 0, Console.WindowWidth, color);
     }
 
     /// <summary>

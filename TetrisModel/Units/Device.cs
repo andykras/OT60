@@ -3,7 +3,7 @@
 namespace TetrisModel
 {
   /// <summary>
-  /// Game unit device
+  /// device which is to render objects
   /// </summary>
   public interface IDevice
   {

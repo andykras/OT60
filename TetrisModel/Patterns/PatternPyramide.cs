@@ -6,7 +6,7 @@ namespace TetrisModel
   {
     public PatternPyramide()
     {
-      Matrix = new byte[,] {
+      Matrix = new ushort[,] {
         { 0, 1, 0 }, 
         { 1, 1, 1 }, 
         { 0, 0, 0 }

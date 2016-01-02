@@ -6,7 +6,7 @@ namespace TetrisModel
   {
     public PatternBox()
     {
-      Matrix = new byte[,] { { 1 } };
+      Matrix = new ushort[,] { { 1 } };
     }
   }
 }

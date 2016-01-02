@@ -2,60 +2,59 @@
 
 namespace TetrisModel
 {
+
   /// <summary>
   /// Sprite.
   /// </summary>
-  public class Sprite : GameUnit
+  public class Sprite : IGameUnit
   {
-    //    public event InvalidateEventHandler Invalidate;
+    public event InvalidateEventHandler InvalidateEvent;
+
+    private double x;
+    private double y;
+    private double angle;
+
+    public double Angle { get { return angle; } }
 
     public static bool refDot = true;
 
-    public double Width { get { return device.Width; } }
+    //    public double Width { get { return device.Width; } }
 
     //    private int state;
-    private Color color;
-    private Color background;
+    protected Color color;
+    //    protected Color background;
     private IDevice device;
     protected Pattern pattern;
 
-    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator, Func<Pattern> patternCreator) :
-      base(x, y)
+    public Sprite(Func<IDevice> deviceCreator, Func<Pattern> patternCreator, double x = 0, double y = 0, Color color = Color.White, double angle = 0)
     {
+      this.x = x;
+      this.y = y;
+      this.angle = angle;
+      this.color = color;
       device = deviceCreator();
       pattern = patternCreator();
-      color = c;
-      background = b;
     }
 
-    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator, PatternFactory patternFactory) :
-      this(x, y, c, b, deviceCreator, patternFactory.CreatePattern)
+    public Sprite(Func<IDevice> deviceCreator, PatternFactory patternFactory, double x = 0, double y = 0, Color color = Color.White, double angle = 0) :
+      this(deviceCreator, patternFactory.CreatePattern, x, y, color, angle)
     {
     }
 
-    public Sprite(double x, double y, Color c, Color b, Func<IDevice> deviceCreator) :
-      this(x, y, c, b, deviceCreator, Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>())
+    public Sprite(Func<IDevice> deviceCreator, double x = 0, double y = 0, Color color = Color.White, double angle = 0) :
+      this(deviceCreator, Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>(), x, y, color, angle)
     {
     }
 
-    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator, Func<Pattern> patternCreator) :
-      this(x, y, c, Color.Black, deviceCreator, patternCreator)
-    {
-    }
-    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator, PatternFactory patternFactory) :
-      this(x, y, c, Color.Black, deviceCreator, patternFactory)
-    {
-    }
-
-    public Sprite(double x, double y, Color c, Func<IDevice> deviceCreator) :
-      this(x, y, c, Color.Black, deviceCreator)
+    public Sprite(double x = 0, double y = 0, Color color = Color.White, double angle = 0) :
+      this(() => new ConsoleDevice(""), Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>(), x, y, color, angle)
     {
     }
 
     /// <summary>
     /// Отрисовка спрайта на устройстве - ничего не знает о способе отрисовки - Console, DirectX, OpenGL...
     /// </summary>
-    public override void Draw()
+    public void Draw()
     {
       foreach (var item in pattern) {
         var col = (item - 1) / pattern.Width;
@@ -77,7 +76,8 @@ namespace TetrisModel
 
       // draw reference point, for _DEBUG_ purpose
       if (refDot) {
-        Console.ForegroundColor = color == background ? ConsoleHelpers.Convert(background) : ConsoleColor.Red;
+        //Console.ForegroundColor = color == background ? ConsoleHelpers.Convert(background) : ConsoleColor.Red;
+        Console.ForegroundColor = ConsoleColor.Red;
         var xr = x + (int) Math.Floor(Console.WindowWidth * 0.5 - 1 + 0.5);
         var yr = -y + (int) Math.Floor(Console.WindowHeight * 0.5 - 1 + 0.5);
         if (xr < 0 || xr >= Console.WindowWidth || yr < 0 || yr >= Console.WindowHeight) return;
@@ -86,13 +86,13 @@ namespace TetrisModel
       }
     }
 
-    public override void Clear()
-    {
-      var col = color;
-      color = background;
-      Draw();
-      color = col;
-    }
+    //    public override void Clear()
+    //    {
+    //      var col = color;
+    //      color = background;
+    //      Draw();
+    //      color = col;
+    //    }
 
     //    public double Angle()
     //    {
@@ -100,17 +100,14 @@ namespace TetrisModel
     //    }
 
 
-    public override void Position(double x, double y)
+    public void Position(double x, double y, double angle)
     {
-//      this.x = x;
-//      this.y = y;
       Update(x, y, angle);
     }
 
-    public override void Rotate(double angle)
+    public void Rotate(double da)
     {
-      //this.angle = angle;
-      Update(x, y, angle);
+      Update(x, y, angle + da);
     }
 
     //    public override void Rotate(int steps)
@@ -121,21 +118,23 @@ namespace TetrisModel
     //      Rotate(state * step);
     //    }
 
-    public override void Move(int dx, int dy)
+    public void Move(double dx, double dy)
     {
-      Position(x + dx, y + dy);
+      Position(x + dx, y + dy, angle);
     }
 
-    private void Update(double x, double y, double angle)
+    protected void Update(double x, double y, double angle)
     {
-      Clear();
       this.x = x;
       this.y = y;
       this.angle = angle;
-      Draw();
-      //if (Invalidate != null) Invalidate();
+      if (InvalidateEvent != null) InvalidateEvent();
     }
 
+    public void SetColor(Color color)
+    {
+      this.color = color;
+    }
   }
 }
 
