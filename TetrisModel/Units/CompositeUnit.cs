@@ -88,6 +88,17 @@ namespace TetrisModel
       foreach (var unit in units) unit.Draw();
     }
 
+    public bool Visible {
+      get
+      {
+        foreach (var unit in units) {
+          if (unit.Visible)
+            return true;
+        }
+        return false;
+      }
+    }
+
     //    public override void Clear()
     //    {
     //      foreach (var unit in units) unit.Clear();

@@ -41,7 +41,7 @@ namespace GameUnits
         // many units - has one single implementation, pattern flyweight
         const int stakan_W = 10;
         const int stakan_H = 10;
-        var stakan = new Fill(x + 30, 5, stakan_W, stakan_H, Color.Gray, Registry<GraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>().CreateFill);
+        var stakan = new Fill(x + 30, 5, stakan_W, stakan_H, Color.Gray, Registry<IGraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>().CreateFill);
         mesh.AddUnit(stakan);
 
         var stakan_by_pattern1 = new Sprite(() => new ConsoleDevice("..", ".."), // or you can use CreateFillImplementation which is reading pattern from settings
@@ -77,8 +77,8 @@ namespace GameUnits
         //for (var i = 0; i < 1000; i++) mesh.AddUnit(new Cell(60, 10, Color.Gray, Registry<GraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>()));
         // or alternatively pass a lambda creator that uses factory singleton as factory method to create single implementation for all units
         //for (var i = 0; i < 1000; i++) 
-        mesh.AddUnit(new Sprite(Registry<GraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>().CreateCell, x + 40, 20, Color.Gray));
-        mesh.AddUnit(new Sprite(Registry<GraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>().CreateCell, x + 35, 20, Color.Gray));
+        mesh.AddUnit(new Sprite(Registry<IGraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>().CreateCell, x + 40, 20, Color.Gray));
+        mesh.AddUnit(new Sprite(Registry<IGraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>().CreateCell, x + 35, 20, Color.Gray));
 
         // pattern test
         mesh.AddUnit(new Sprite(() => new FastConsoleDevice("[]"), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), x, 1, Color.Green));  

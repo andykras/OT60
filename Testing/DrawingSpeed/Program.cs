@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using TetrisModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace DrawingSpeed
 {
@@ -79,6 +81,66 @@ namespace DrawingSpeed
           //Thread.Sleep(1 + rnd.Next(speed));
           Thread.Sleep(100);
         }
+      }){ IsBackground = true };
+      shaker.Start();
+    }
+
+    public void Start()
+    {
+      isActive.Set();
+    }
+
+    public void Stop()
+    {
+      isActive.Reset();
+    }
+  }
+
+
+  class Falling:IHandler
+  {
+    private readonly ManualResetEvent isActive = new ManualResetEvent(true);
+    private Thread shaker;
+    private static int x = 0;
+    private static int y = 0;
+    private static SimpleLock locker = new SimpleLock();
+    public Falling(IGameUnit unit, int speed = 1000)
+    {
+      if (x == 0 && y == 0) {
+        x = -Console.WindowWidth / 2;
+        y = Console.WindowHeight / 2 - 10;
+      }
+      shaker = new Thread(() =>
+      {
+        var rnd = new Random(unit.GetHashCode());
+        while (true) {
+//          locker.Enter();
+          var x = -Console.WindowWidth / 2 + rnd.Next(Console.WindowWidth);
+          var y = -Console.WindowHeight / 2 + rnd.Next(Console.WindowHeight);
+//          x += 4;
+//          if (x > Console.WindowWidth / 2) {
+//            x = -Console.WindowWidth / 2;
+//          }
+          unit.Position(x, y, 0);
+//          unit.Draw();
+//          locker.Exit();
+          var end = 1000 + rnd.NextDouble() * 1000;
+          var time = 0;
+          var d = 30;
+          while (time < end && unit.Visible) {
+            isActive.WaitOne();
+            //unit.Move((int) Math.Pow(-1, ++iter), 0);
+            //unit.Rotate(Math.PI / 120);
+            unit.Move(0, -0.2);
+            //Thread.Sleep(1 + rnd.Next(speed));
+            Thread.Sleep(d);
+            time += d;
+          }
+          if (!unit.Visible) {
+            int foo = 1;
+          }
+        }
+        unit.Enable = false;
       }){ IsBackground = true };
       shaker.Start();
     }
@@ -239,6 +301,14 @@ namespace DrawingSpeed
 
       var falling_piece = new Sprite(() => new FastConsoleDevice(new []{ "[]" }), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), 0, Console.WindowHeight / 2, Color.Green);
       intro.AddAnimation(falling_piece, new Rotor(falling_piece));
+
+      for (var i = 0; i < 150; i++) {
+        var snowflake = new Sprite(Registry<IGraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>().CreateSnowFlake);
+//        var foo = String.Format("{0:D2}", i);
+//        var snowflake = new Sprite(() => new FastConsoleDevice(new []{ foo }));
+        intro.AddAnimation(snowflake, new Falling(snowflake));
+      }
+
     }
 
     public override Intro GetIntro()
@@ -321,7 +391,7 @@ namespace DrawingSpeed
     public TetrisGame()
     {
       Console.CursorVisible = false;
-      Sprite.refDot = true;
+      Sprite.refDot = false;
 
       //CreateEngine();
       var mainMenu = CreateIntro(new FancyIntroBuilder());
@@ -501,6 +571,7 @@ namespace DrawingSpeed
             ShowInfo();
           simple.Exit();
         }
+        Thread.Sleep(50);
         draw.Reset();
       }
     }
@@ -509,6 +580,7 @@ namespace DrawingSpeed
     {
       Console.SetCursorPosition(0, int.Parse(Thread.CurrentThread.Name) - 1);
       Console.ForegroundColor = ConsoleColor.White;
+      Console.BackgroundColor = ConsoleColor.Red;
       Console.Write("Total drawing objects: {0}, Key {1} pressed", objects.Count, key);
     }
 

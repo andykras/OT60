@@ -56,7 +56,7 @@ namespace TetrisModel
     /// <param name="y">The y coordinate.</param>
     /// <param name="angle">Angle.</param>
     /// <param name="color">Color.</param>
-    public virtual void Draw(double x, double y, double angle, Color color)
+    public virtual bool Draw(double x, double y, double angle, Color color)
     {
       Console.ForegroundColor = ConsoleHelpers.Convert(color);
 
@@ -65,6 +65,7 @@ namespace TetrisModel
       y = -y + (int) Math.Floor(Console.WindowHeight * 0.5 - 1 + 0.5);
 
       // draw sprite
+      var visible = false;
       foreach (var item in coords) {
         var col = (item - 1) / Width;
         var raw = item - 1 - col * Width;
@@ -79,9 +80,11 @@ namespace TetrisModel
         xnew = Scale(xnew, 0.5);
         ynew = Scale(ynew, 0.5);
         if (xnew < 0 || xnew >= Console.WindowWidth || ynew < 0 || ynew >= Console.WindowHeight) continue;
+        visible = true;
         Console.SetCursorPosition((int) xnew, (int) ynew);
         Console.Write(sprite[col][raw]);
       }
+      return visible;
     }
 
     const double epsilon = 0.000001;

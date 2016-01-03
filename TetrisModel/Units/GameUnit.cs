@@ -11,6 +11,8 @@ namespace TetrisModel
 
     bool Enable { get; set; }
 
+    bool Visible { get; }
+
     /// <summary>
     /// Draw this unit
     /// </summary>

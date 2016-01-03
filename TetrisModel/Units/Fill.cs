@@ -41,7 +41,7 @@ namespace TetrisModel
     }
 
 
-    public Fill(double x, double y, int n, int m, Color c, GraphicsFactory factory) :
+    public Fill(double x, double y, int n, int m, Color c, IGraphicsFactory factory) :
       this(x, y, n, m, c, factory.CreateFill)
     {
     }

@@ -10,7 +10,7 @@ namespace TetrisModel
     int Width { get; }
     int Height { get; }
 
-    void Draw(double x, double y, double angle, Color color);
+    bool Draw(double x, double y, double angle, Color color);
   }
 }
 

@@ -49,7 +49,7 @@ namespace TetrisModel
     }
 
     public Sprite(double x = 0, double y = 0, Color color = Color.White, double angle = 0) :
-      this(() => new ConsoleDevice(""), Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>(), x, y, color, angle)
+      this(() => new ConsoleDevice("*"), Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>(), x, y, color, angle)
     {
     }
 
@@ -59,6 +59,7 @@ namespace TetrisModel
     public void Draw()
     {
       if (!Enable) return;
+      visible = false;
       foreach (var item in pattern) {
         var col = (item - 1) / pattern.Width;
         var raw = item - 1 - col * pattern.Width;
@@ -74,7 +75,7 @@ namespace TetrisModel
         xnew = x + (xnew - x) * device.Width;
         ynew = y + (ynew - y) * device.Height;
 
-        device.Draw(xnew, ynew, angle, color);
+        visible = device.Draw(xnew, ynew, angle, color) || visible;
       }
 
       // draw reference point, for _DEBUG_ purpose
@@ -88,6 +89,9 @@ namespace TetrisModel
         Console.Write("X");
       }
     }
+
+    private bool visible = true;
+    public bool Visible { get { return visible; } }
 
     //    public override void Clear()
     //    {
@@ -128,6 +132,7 @@ namespace TetrisModel
 
     protected void Update(double x, double y, double angle)
     {
+      visible = true;
       this.x = x;
       this.y = y;
       this.angle = angle;

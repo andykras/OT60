@@ -8,8 +8,10 @@ namespace TetrisModel
   public class ConsoleWindow:IGameUnit
   {
     public bool Enable { get; set; } = true;
+    public bool Visible { get { return true; } }
 
     private ConsoleColor b;
+
     private ConsoleColor color;
     private ConsoleColor ground;
     private ConsoleColor shadow;

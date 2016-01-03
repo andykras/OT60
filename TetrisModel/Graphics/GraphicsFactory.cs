@@ -6,10 +6,11 @@ namespace TetrisModel
   /// <summary>
   /// Graphics factory.
   /// </summary>
-  public interface GraphicsFactory
+  public interface IGraphicsFactory
   {
     IDevice CreateCell();
     IDevice CreateFill();
+    IDevice CreateSnowFlake();
   }
 }
 
