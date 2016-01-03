@@ -10,6 +10,8 @@ namespace TetrisModel
   {
     public event InvalidateEventHandler InvalidateEvent;
 
+    public bool Enable { get; set; } = true;
+
     private double x;
     private double y;
     private double angle;
@@ -56,6 +58,7 @@ namespace TetrisModel
     /// </summary>
     public void Draw()
     {
+      if (!Enable) return;
       foreach (var item in pattern) {
         var col = (item - 1) / pattern.Width;
         var raw = item - 1 - col * pattern.Width;

@@ -64,6 +64,8 @@
     <Compile Include="Units\Sprite.cs" />
     <Compile Include="Units\ConsoleWindow.cs" />
     <Compile Include="Units\SceneObject.cs" />
+    <Compile Include="SimpleLock.cs" />
+    <Compile Include="ConsoleKeyboard.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,72 +1,18 @@
 ﻿using System;
-using System.Threading;
-using TetrisModel;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
+using System.IO.Ports;
 using System.Threading;
 using System.Threading.Tasks;
+using TetrisModel;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace DrawingSpeed
 {
-  interface IKeyboardListener
-  {
-    void Update(ConsoleKey key);
-  }
-
-
-  class KeyboardEvents
-  {
-    private readonly List<IKeyboardListener> listeners = new List<IKeyboardListener>();
-    readonly static SimpleLock simple = new SimpleLock();
-
-    static KeyboardEvents()
-    {
-      new KeyboardEvents();
-    }
-
-    private KeyboardEvents()
-    {
-      Registry<KeyboardEvents>.Register(this);
-      new Thread(() =>
-      {
-        while (true) {
-          Fire(Console.ReadKey(true).Key);
-        }
-
-      }){ IsBackground = true }.Start();
-    }
-
-    public void Add(IKeyboardListener listener)
-    {
-      simple.Enter();
-      listeners.Add(listener);
-      simple.Exit();
-    }
-
-    public void Remove(IKeyboardListener listener)
-    {
-      simple.Enter();
-      listeners.Remove(listener);
-      simple.Exit();
-    }
-
-    private void Fire(ConsoleKey key)
-    {
-      simple.Enter();
-      foreach (var listener in listeners) {
-        listener.Update(key);
-      }
-      simple.Exit();
-    }
-  }
-
-
-  class Rotor : IKeyboardListener
+  class Rotor : IKeyboardListener,IHandler
   {
     private int speed;
-
+    private readonly ManualResetEvent isActive = new ManualResetEvent(true);
     private Thread rotor;
     public Rotor(IGameUnit unit, double delta = Math.PI / 2, int speed = 1000)
     {
@@ -75,6 +21,7 @@ namespace DrawingSpeed
       rotor = new Thread(() =>
       {
         while (true) {
+          isActive.WaitOne();
           unit.Rotate(delta);
           unit.Move(0, -1);
           Thread.Sleep(this.speed);
@@ -82,7 +29,8 @@ namespace DrawingSpeed
       }){ IsBackground = true };
       rotor.Start();
 
-      Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this);
+      ConsoleKeyboard.Get.Add(this);
+//      Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this);
     }
 
     public void Update(ConsoleKey key)
@@ -91,122 +39,189 @@ namespace DrawingSpeed
       else if (key == ConsoleKey.Subtract) speed += 100;
     }
 
+    public void Start()
+    {
+      //Task.Factory.StartNew(() => Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this));
+      Task.Factory.StartNew(() => ConsoleKeyboard.Get.Add(this));
+      isActive.Set();
+    }
+
     public void Stop()
     {
-      rotor.Abort();
-      Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Remove(this);
+      isActive.Reset();
+//      Task.Factory.StartNew(() => Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Remove(this));
+      Task.Factory.StartNew(() => ConsoleKeyboard.Get.Remove(this));
     }
   }
 
 
-  class Shaker
+  interface IHandler
   {
+    void Start();
+    void Stop();
+  }
+
+
+  class Shaker:IHandler
+  {
+    private readonly ManualResetEvent isActive = new ManualResetEvent(true);
+    private Thread shaker;
     public Shaker(IGameUnit unit, int speed = 1000)
     {
-      new Thread(() =>
+      shaker = new Thread(() =>
       {
         var rnd = new Random(unit.GetHashCode());
         var iter = 0;
         while (true) {
+          isActive.WaitOne();
           //unit.Move((int) Math.Pow(-1, ++iter), 0);
           unit.Rotate(Math.PI / 120);
           //Thread.Sleep(1 + rnd.Next(speed));
           Thread.Sleep(100);
         }
-      }){ IsBackground = true }.Start();
+      }){ IsBackground = true };
+      shaker.Start();
+    }
+
+    public void Start()
+    {
+      isActive.Set();
+    }
+
+    public void Stop()
+    {
+      isActive.Reset();
     }
   }
 
 
-  class TetrisGame:IKeyboardListener
+  enum GameEvent
+  {
+    IntroStart,
+    IntroStop,
+    IntroToggleBackground
+  }
+
+
+  interface IEventListener
+  {
+    void Update(GameEvent e);
+  }
+
+
+  class Intro:CompositeUnit,IEventListener
   {
     public event InvalidateEventHandler InvalidateEvent;
 
-    private ManualResetEvent isActive = new ManualResetEvent(false);
-
-    private Color background = Color.Blue;
-
-    public void Update(ConsoleKey key)
+    public Intro(IRenderEngine engine, ITetrisGame game)
     {
-      Console.SetCursorPosition(0, 0);
-      Console.WriteLine("                                                   ");
-      Console.SetCursorPosition(0, 0);
-      Console.WriteLine("Key {0} pressed", key);
+      this.engine = engine;
+      game.Add(this);
+    }
 
-      if (key == ConsoleKey.Escape)
-        isActive.Set();
-
-      if (key == ConsoleKey.Spacebar) {
-        autoUpdate = !autoUpdate;
-        Task.Factory.StartNew(CreateScene);
+    public void Update(GameEvent e)
+    {
+      if (e == GameEvent.IntroStart) {
+        foreach (var handler in handlers) handler.Start();
+        if (engine != null) engine.Enable = true;
+      }
+      else if (e == GameEvent.IntroStop) {
+        foreach (var handler in handlers) handler.Stop();
+        if (engine != null) engine.Enable = false;
+      }
+      else if (e == GameEvent.IntroToggleBackground) {
+        background.Enable = !background.Enable;
       }
     }
 
-    public TetrisGame()
+    IGameUnit background;
+    public void SetBackground(IGameUnit unit)
     {
-      Console.CursorVisible = false;
-      Sprite.refDot = true;
-
-      CreateScene();
-
-      Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this);
+      background = unit;
+      Add(unit, null);
     }
 
-    public void Run()
+    public void AddAnimation(IGameUnit unit, IHandler handler = null)
     {
-      isActive.WaitOne();
+      Add(unit, handler);
     }
 
-    private Rotor rotor;
-    private Scene scene;
-    private IGameUnit foo;
-    readonly static SimpleLock simple = new SimpleLock();
-    private bool autoUpdate = false;
-    private void CreateScene()
+    private void Add(IGameUnit unit, IHandler handler)
     {
-      simple.Enter();
-      if (rotor != null) rotor.Stop();
-      if (foo != null) foo.InvalidateEvent -= Invalidate;
-      if (scene != null) scene.Stop(this);
-      foo = new Sprite(() => new FastConsoleDevice(new []{ "[]" }), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), 0, Console.WindowHeight / 2, Color.Green);
-      foo.InvalidateEvent += Invalidate;
-      scene = new Scene(this);
+      if (handler != null)
+        handlers.Add(handler);
+      AddUnit(unit);
+      unit.InvalidateEvent += Invalidate;
+      if (engine != null) {
+        engine.Add(unit);
+        engine.Update();
+      }
+    }
+
+    public void Invalidate()
+    {
+      if (InvalidateEvent != null) InvalidateEvent();
+    }
+
+    private List<IHandler> handlers = new List<IHandler>();
+    private IRenderEngine engine;
+  }
 
 
-      scene.Add(new Background(background, () => new ConsoleBackground()));
+  class IntroBuilder
+  {
+    public virtual void BuildIntro(IRenderEngine engine, ITetrisGame game)
+    {
+    }
+    public virtual void BuildBackground()
+    {
+    }
+    public virtual void BuildMenu()
+    {
+    }
+    public virtual void BuildAnimation()
+    {
+    }
 
+    public virtual Intro GetIntro()
+    {
+      return null;
+    }
+
+    protected IntroBuilder()
+    {
+    }
+  }
+
+
+  class FancyIntroBuilder : IntroBuilder
+  {
+    public override void BuildIntro(IRenderEngine engine, ITetrisGame game)
+    {
+      intro = new Intro(engine, game);
+    }
+
+    public override void BuildBackground()
+    {
       var rnd = new Random();
       var H = Console.WindowHeight;
       var W = Console.WindowWidth;
 
-      var stars = new Sprite(() => new ConsoleDevice(new [] { "." }), 
+      var stars = new Sprite(() => new FastConsoleDevice(new [] { "." }), 
                              () =>
       {
         var matrix = new ushort[H, W];
         for (var i = 0; i < H; i++) for (var j = 0; j < W; j++) matrix[i, j] = rnd.NextDouble() < 0.91 ? (ushort) 0 : (ushort) 1;
         return new Pattern(matrix);
       }, -Console.WindowWidth / 2 + 1, Console.WindowHeight / 2 - 1, Color.White);
-      scene.Add(stars);
-      //scene.Add(trees);
+      intro.SetBackground(stars);
+    }
 
-//      var trees = new CompositeUnit();
-//      W = Console.WindowWidth;
-//      H = Console.WindowHeight;
-//      for (var i = 0; i < 150; i++) {
-//        var x = -W / 2 + rnd.Next(W);
-//        var y = -H / 2 + rnd.Next(H);
-//        var tree = new Sprite(() => new FastConsoleDevice(new [] { 
-//          @"  \  ",
-//          @" /*\ ", 
-//          @"//|\\",
-//          @"  |  ",
-//          @" ___ "
-//        }), x, y, Color.DarkGreen);
-//        //tree.InvalidateEvent += Invalidate;
-//        trees.AddUnit(tree);
-//      }
-      H = 20;
-      W = 30;
+    public override void BuildAnimation()
+    {
+      var H = 20;
+      var W = 30;
+      var rnd = new Random();
       var trees = new Sprite(() => new FastConsoleDevice(new [] { 
         @"  \  ",
         @" /*\ ", 
@@ -219,17 +234,184 @@ namespace DrawingSpeed
         for (var i = 0; i < H; i++) for (var j = 0; j < W; j++) matrix[i, j] = rnd.NextDouble() < 0.85 ? (ushort) 0 : (ushort) 1;
         return new Pattern(matrix);
       }, -Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 - 3, Color.DarkGreen);
+      intro.AddAnimation(trees, new Shaker(trees));
 
-      trees.InvalidateEvent += Invalidate;
-      scene.Add(trees);
 
-      var shaker = new Shaker(trees);
-
-      scene.Add(foo);
-      rotor = new Rotor(foo);
-
-      simple.Exit();
+      var falling_piece = new Sprite(() => new FastConsoleDevice(new []{ "[]" }), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), 0, Console.WindowHeight / 2, Color.Green);
+      intro.AddAnimation(falling_piece, new Rotor(falling_piece));
     }
+
+    public override Intro GetIntro()
+    {
+      return intro;
+    }
+
+    public FancyIntroBuilder()
+    {
+      intro = null;
+    }
+
+    private Intro intro;
+  }
+
+
+  interface ITetrisGame
+  {
+    event InvalidateEventHandler InvalidateEvent;
+    void Add(IEventListener listener);
+    void Remove(IEventListener listener);
+  }
+
+
+  class TetrisGame:IKeyboardListener,ITetrisGame
+  {
+    public event InvalidateEventHandler InvalidateEvent;
+
+    private ManualResetEvent isActive = new ManualResetEvent(false);
+
+    private Color background = Color.Blue;
+
+    private bool anim = true;
+    public void Update(ConsoleKey key)
+    {
+      if (key == ConsoleKey.Escape)
+        isActive.Set();
+      else if (key == ConsoleKey.Spacebar) {
+        anim = !anim;
+        FireEvent(anim ? GameEvent.IntroStart : GameEvent.IntroStop);
+      }
+      else if (key == ConsoleKey.B)
+        FireEvent(GameEvent.IntroToggleBackground);
+    }
+
+    private SimpleLock subscribersLock = new SimpleLock();
+    private List<IEventListener> subscribers = new List<IEventListener>();
+    public void Add(IEventListener listener)
+    {
+      subscribersLock.Enter();
+      subscribers.Add(listener);
+      subscribersLock.Exit();
+    }
+
+    public void Remove(IEventListener listener)
+    {
+      subscribersLock.Enter();
+      subscribers.Remove(listener);
+      subscribersLock.Exit();
+    }
+
+    private void FireEvent(GameEvent e)
+    {
+      subscribersLock.Enter();
+      foreach (var listener in subscribers) {
+        listener.Update(e);
+      }
+      subscribersLock.Exit();
+    }
+
+    public Intro CreateIntro(IntroBuilder builder)
+    {
+      builder.BuildIntro(new ConsoleRenderEngine(this), this);
+      builder.BuildBackground();
+      builder.BuildAnimation();
+      builder.BuildMenu();
+      return builder.GetIntro();
+    }
+
+    public TetrisGame()
+    {
+      Console.CursorVisible = false;
+      Sprite.refDot = true;
+
+      //CreateEngine();
+      var mainMenu = CreateIntro(new FancyIntroBuilder());
+      mainMenu.InvalidateEvent += Invalidate;
+
+//      Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this);
+      ConsoleKeyboard.Get.Add(this);
+    }
+
+    public void Run()
+    {
+      isActive.WaitOne();
+    }
+
+    //    private Rotor rotor;
+    //    private ConsoleRenderEngine engine;
+    //    private IGameUnit foo;
+    //    readonly static SimpleLock simple = new SimpleLock();
+    //    private bool autoUpdate = false;
+    //    private void CreateEngine()
+    //    {
+    //      simple.Enter();
+    //      if (rotor != null) rotor.Stop();
+    //      if (foo != null) foo.InvalidateEvent -= Invalidate;
+    //      //if (engine != null) engine.Stop(this);
+    //      foo = new Sprite(() => new FastConsoleDevice(new []{ "[]" }), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), 0, Console.WindowHeight / 2, Color.Green);
+    //      foo.InvalidateEvent += Invalidate;
+    //      engine = new ConsoleRenderEngine(this);
+    //
+    //
+    //      var rnd = new Random();
+    //      var H = Console.WindowHeight;
+    //      var W = Console.WindowWidth;
+    //
+    //
+    //      var builder = new FancyIntroBuilder();
+    //      CreateIntro(builder);
+    //      engine.Add(builder.GetIntro());
+    //
+    ////      var stars = new Sprite(() => new ConsoleDevice(new [] { "." }), 
+    ////                             () =>
+    ////      {
+    ////        var matrix = new ushort[H, W];
+    ////        for (var i = 0; i < H; i++) for (var j = 0; j < W; j++) matrix[i, j] = rnd.NextDouble() < 0.91 ? (ushort) 0 : (ushort) 1;
+    ////        return new Pattern(matrix);
+    ////      }, -Console.WindowWidth / 2 + 1, Console.WindowHeight / 2 - 1, Color.White);
+    ////      engine.Add(stars);
+    //      //engine.Add(trees);
+    //
+    ////      var trees = new CompositeUnit();
+    ////      W = Console.WindowWidth;
+    ////      H = Console.WindowHeight;
+    ////      for (var i = 0; i < 150; i++) {
+    ////        var x = -W / 2 + rnd.Next(W);
+    ////        var y = -H / 2 + rnd.Next(H);
+    ////        var tree = new Sprite(() => new FastConsoleDevice(new [] { 
+    ////          @"  \  ",
+    ////          @" /*\ ", 
+    ////          @"//|\\",
+    ////          @"  |  ",
+    ////          @" ___ "
+    ////        }), x, y, Color.DarkGreen);
+    ////        //tree.InvalidateEvent += Invalidate;
+    ////        trees.AddUnit(tree);
+    ////      }
+    //      H = 20;
+    //      W = 30;
+    //      var trees = new Sprite(() => new FastConsoleDevice(new [] { 
+    //        @"  \  ",
+    //        @" /*\ ", 
+    //        @"//|\\",
+    //        @"  |  ",
+    //        @" ___ "
+    //      }), () =>
+    //      {
+    //        var matrix = new ushort[H, W];
+    //        for (var i = 0; i < H; i++) for (var j = 0; j < W; j++) matrix[i, j] = rnd.NextDouble() < 0.85 ? (ushort) 0 : (ushort) 1;
+    //        return new Pattern(matrix);
+    //      }, -Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 - 3, Color.DarkGreen);
+    //
+    //      trees.InvalidateEvent += Invalidate;
+    //      engine.Add(trees);
+    //
+    //      var shaker = new Shaker(trees);
+    //
+    //      engine.Add(foo);
+    //      rotor = new Rotor(foo);
+    //
+    //      simple.Exit();
+    //    }
 
     private void Invalidate()
     {
@@ -238,91 +420,52 @@ namespace DrawingSpeed
   }
 
 
-  class ConsoleBackground : IDevice
+  interface IRenderEngine
   {
-    public void Draw(double x, double y, double angle, Color color)
-    {
-      var b = ConsoleHelpers.Convert(color);
-      Console.BackgroundColor = b;
-      ConsoleHelpers.FillRect(0, Height, 0, Width, b);
-    }
-    public int Width { get { return Console.WindowWidth; } }
-    public int Height { get { return Console.WindowHeight; } }
+    bool Enable { get; set; }
+    void Add(IGameUnit obj);
+    void Remove(IGameUnit obj);
+    void Update();
   }
 
 
-  class Background : IGameUnit
+  class ConsoleRenderEngine : IRenderEngine, IKeyboardListener
   {
-    public event InvalidateEventHandler InvalidateEvent;
+    public bool Enable { get; set; }
 
-    private Color background;
-    private IDevice device;
-
-    public Background(Color background, Func<IDevice> deviceCreator)
-    {
-      this.background = background;
-      this.device = deviceCreator();
-    }
-
-    public void Draw()
-    {
-      device.Draw(0, 0, 0, background);
-    }
-
-    public void Position(double x, double y, double angle)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void Move(double dx, double dy)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void SetColor(Color color)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void Rotate(double da)
-    {
-      throw new NotImplementedException();
-    }
-
-    public double Angle { get { throw new NotImplementedException(); } }
-  }
-
-
-  class Scene : IKeyboardListener
-  {
+    private ConsoleKey key;
     public void Update(ConsoleKey key)
     {
-      if (key == ConsoleKey.S) toggleShowTotal = !toggleShowTotal;
+      this.key = key;
+      if (key == ConsoleKey.I) toggleShowInfo = !toggleShowInfo;
       Update();
     }
 
     public static int Count;
 
-    private bool toggleShowTotal = true;
+    private bool toggleShowInfo = true;
 
     ManualResetEvent draw = new ManualResetEvent(false);
     List<IGameUnit> objects = new List<IGameUnit>();
     readonly static SimpleLock simple = new SimpleLock();
 
     private Thread render;
-    public Scene(TetrisGame game)
+    public ConsoleRenderEngine(ITetrisGame game)
     {
       Interlocked.Increment(ref Count);
       game.InvalidateEvent += Update;
       render = new Thread(Render){ IsBackground = true, Name = Count.ToString() };
       render.Start();
-      Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this);
+      Enable = true;
+      //Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this);
+      ConsoleKeyboard.Get.Add(this);
     }
 
-    public void Stop(TetrisGame game)
+    private bool run = true;
+    public void Stop(ITetrisGame game)
     {
       game.InvalidateEvent -= Update;
-      render.Abort();
+      run = false;
     }
 
     public void Add(IGameUnit obj)
@@ -347,42 +490,34 @@ namespace DrawingSpeed
 
     private void Render()
     {
-      while (true) {
+      while (run) {
         draw.WaitOne();
-        simple.Enter();
-        for (var i = 0; i < objects.Count; i++) objects[i].Draw();
-        //foreach (var obj in objects) obj.Draw();
-        if (toggleShowTotal)
-          ShowTotal();
-        simple.Exit();
+        if (Enable) {
+          simple.Enter();
+          ClearDevice();
+          for (var i = 0; i < objects.Count; i++) objects[i].Draw();
+          //foreach (var obj in objects) obj.Draw();
+          if (toggleShowInfo)
+            ShowInfo();
+          simple.Exit();
+        }
         draw.Reset();
       }
     }
 
-    private void ShowTotal()
+    private void ShowInfo()
     {
       Console.SetCursorPosition(0, int.Parse(Thread.CurrentThread.Name) - 1);
       Console.ForegroundColor = ConsoleColor.White;
-      Console.Write("Total drawing objects: {0}", objects.Count);
-    }
-  }
-
-
-  class SimpleLock
-  {
-    private int waiters = 0;
-    private readonly AutoResetEvent waiterLock = new AutoResetEvent(false);
-
-    public void Enter()
-    {
-      if (Interlocked.Increment(ref waiters) == 1) return; 
-      waiterLock.WaitOne(); 
+      Console.Write("Total drawing objects: {0}, Key {1} pressed", objects.Count, key);
     }
 
-    public void Exit()
+    private Color background = Color.Blue;
+    private void ClearDevice()
     {
-      if (Interlocked.Decrement(ref waiters) == 0) return;
-      waiterLock.Set(); 
+      var b = ConsoleHelpers.Convert(background);
+      Console.BackgroundColor = b;
+      ConsoleHelpers.FillRect(b);
     }
   }
 

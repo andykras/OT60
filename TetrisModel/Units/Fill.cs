@@ -16,16 +16,16 @@ namespace TetrisModel
     private int M = 0;
 
 
-    private Color color;
+    //    private Color color;
 
-    private static Random rnd = new Random();
+    //    private static Random rnd = new Random();
 
-    private double angle = 0;
+    //    private double angle = 0;
 
     public Fill(double x, double y, int n, int m, Color c, Func<IDevice> deviceCreator) :
       base(x, y, 0)
     {
-      color = c;
+//      color = c;
       N = n;
       M = m;
       var tmp = deviceCreator();

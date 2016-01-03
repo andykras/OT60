@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Policy;
 
 namespace TetrisModel
 {
@@ -7,6 +8,8 @@ namespace TetrisModel
     event InvalidateEventHandler InvalidateEvent;
 
     double Angle { get; }
+
+    bool Enable { get; set; }
 
     /// <summary>
     /// Draw this unit

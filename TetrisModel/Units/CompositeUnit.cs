@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using System.Security.Policy;
 
 namespace TetrisModel
 {
   public class CompositeUnit : IGameUnit
   {
+    public bool Enable { get; set; } = true;
+
     public event InvalidateEventHandler InvalidateEvent;
 
     protected List<IGameUnit> units = new List<IGameUnit>();
@@ -28,12 +31,12 @@ namespace TetrisModel
     {
     }
 
-    public void AddUnit(IGameUnit unit)
+    public virtual void AddUnit(IGameUnit unit)
     {
       units.Add(unit);
     }
 
-    public void RemoveUnit(IGameUnit unit)
+    public virtual void RemoveUnit(IGameUnit unit)
     {
       units.Remove(unit);
     }
@@ -81,6 +84,7 @@ namespace TetrisModel
 
     public virtual void Draw()
     {
+      if (!Enable) return;
       foreach (var unit in units) unit.Draw();
     }
 

@@ -7,6 +7,8 @@ namespace TetrisModel
   /// </summary>
   public class ConsoleWindow:IGameUnit
   {
+    public bool Enable { get; set; } = true;
+
     private ConsoleColor b;
     private ConsoleColor color;
     private ConsoleColor ground;
@@ -44,6 +46,7 @@ namespace TetrisModel
 
     public void Draw()
     {
+      if (!Enable) return;
       if (!useNativeColor) {
         if (useCoord)
           ConsoleHelpers.DrawWindow((int) x, (int) y, text, 1, -1, color, ground, true, shadow, border);
