@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace DrawingSpeed
 {
@@ -161,7 +162,8 @@ namespace DrawingSpeed
   {
     IntroStart,
     IntroStop,
-    IntroToggleBackground
+    IntroToggleBackground,
+    IntroToggleTrees
   }
 
 
@@ -194,6 +196,13 @@ namespace DrawingSpeed
       else if (e == GameEvent.IntroToggleBackground) {
         background.Enable = !background.Enable;
       }
+      else if (e == GameEvent.IntroToggleTrees) {
+        trees.Enable = !trees.Enable;
+        if (trees.Enable)
+          treesHandler.Start();
+        else
+          treesHandler.Stop();
+      }
     }
 
     IGameUnit background;
@@ -201,6 +210,15 @@ namespace DrawingSpeed
     {
       background = unit;
       Add(unit, null);
+    }
+
+    IGameUnit trees;
+    IHandler treesHandler;
+    public void SetTrees(IGameUnit unit, IHandler handler)
+    {
+      trees = unit;
+      treesHandler = handler;
+      Add(unit, handler);
     }
 
     public void AddAnimation(IGameUnit unit, IHandler handler = null)
@@ -244,6 +262,9 @@ namespace DrawingSpeed
     public virtual void BuildAnimation()
     {
     }
+    public virtual void BuildTrees()
+    {
+    }
 
     public virtual Intro GetIntro()
     {
@@ -258,6 +279,7 @@ namespace DrawingSpeed
 
   class FancyIntroBuilder : IntroBuilder
   {
+    Random rnd = new Random();
     public override void BuildIntro(IRenderEngine engine, ITetrisGame game)
     {
       intro = new Intro(engine, game);
@@ -265,25 +287,26 @@ namespace DrawingSpeed
 
     public override void BuildBackground()
     {
-      var rnd = new Random();
       var H = Console.WindowHeight;
       var W = Console.WindowWidth;
 
-      var stars = new Sprite(() => new FastConsoleDevice(new [] { "." }), 
-                             () =>
+      var background = new CompositeUnit();
+
+      var stars = new Sprite(() => new FastConsoleDevice(new [] { "." }), () =>
       {
         var matrix = new ushort[H, W];
         for (var i = 0; i < H; i++) for (var j = 0; j < W; j++) matrix[i, j] = rnd.NextDouble() < 0.91 ? (ushort) 0 : (ushort) 1;
         return new Pattern(matrix);
       }, -Console.WindowWidth / 2 + 1, Console.WindowHeight / 2 - 1, Color.White);
-      intro.SetBackground(stars);
+      background.AddUnit(stars);
+
+      intro.SetBackground(background);
     }
 
-    public override void BuildAnimation()
+    public override void BuildTrees()
     {
       var H = 20;
       var W = 30;
-      var rnd = new Random();
       var trees = new Sprite(() => new FastConsoleDevice(new [] { 
         @"  \  ",
         @" /*\ ", 
@@ -296,12 +319,11 @@ namespace DrawingSpeed
         for (var i = 0; i < H; i++) for (var j = 0; j < W; j++) matrix[i, j] = rnd.NextDouble() < 0.85 ? (ushort) 0 : (ushort) 1;
         return new Pattern(matrix);
       }, -Console.WindowWidth / 2 + 10, Console.WindowHeight / 2 - 3, Color.DarkGreen);
-      intro.AddAnimation(trees, new Shaker(trees));
+      intro.SetTrees(trees, new Shaker(trees));
+    }
 
-
-      var falling_piece = new Sprite(() => new FastConsoleDevice(new []{ "[]" }), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), 0, Console.WindowHeight / 2, Color.Green);
-      intro.AddAnimation(falling_piece, new Rotor(falling_piece));
-
+    public override void BuildAnimation()
+    {
       for (var i = 0; i < 150; i++) {
         var snowflake = new Sprite(Registry<IGraphicsFactory>.GetInstanceOf<ConsoleGraphicsFactory>().CreateSnowFlake);
 //        var foo = String.Format("{0:D2}", i);
@@ -309,6 +331,8 @@ namespace DrawingSpeed
         intro.AddAnimation(snowflake, new Falling(snowflake));
       }
 
+      var falling_piece = new Sprite(() => new FastConsoleDevice(new []{ "[]" }), Registry<PatternFactory>.GetInstanceOf<PyramidePatternFactory>(), 0, Console.WindowHeight / 2, Color.Green);
+      intro.AddAnimation(falling_piece, new Rotor(falling_piece));
     }
 
     public override Intro GetIntro()
@@ -352,6 +376,8 @@ namespace DrawingSpeed
       }
       else if (key == ConsoleKey.B)
         FireEvent(GameEvent.IntroToggleBackground);
+      else if (key == ConsoleKey.T)
+        FireEvent(GameEvent.IntroToggleTrees);
     }
 
     private SimpleLock subscribersLock = new SimpleLock();
@@ -383,6 +409,7 @@ namespace DrawingSpeed
     {
       builder.BuildIntro(new ConsoleRenderEngine(this), this);
       builder.BuildBackground();
+      builder.BuildTrees();
       builder.BuildAnimation();
       builder.BuildMenu();
       return builder.GetIntro();
