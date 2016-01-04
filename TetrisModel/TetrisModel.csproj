@@ -76,7 +76,6 @@
     <Compile Include="Scenes\TetrisFactory.cs" />
     <Compile Include="Scenes\TetrisScene.cs" />
     <Compile Include="Scenes\IntroScene.cs" />
-    <Compile Include="Game\ISceneManager.cs" />
     <Compile Include="Scenes\IntroFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
