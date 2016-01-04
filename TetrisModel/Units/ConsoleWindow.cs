@@ -74,19 +74,24 @@ namespace TetrisModel
     public event InvalidateEventHandler InvalidateEvent;
     public void Position(double x, double y, double angle)
     {
-      throw new NotImplementedException();
+      Invalidate();
     }
     public void Rotate(double da)
     {
-      throw new NotImplementedException();
+      Invalidate();
     }
     public void Move(double dx, double dy)
     {
-      throw new NotImplementedException();
+      Invalidate();
     }
     public void SetColor(Color color)
     {
-      throw new NotImplementedException();
+      Invalidate();
+    }
+
+    protected void Invalidate()
+    {
+      if (InvalidateEvent != null) InvalidateEvent();
     }
   }
   

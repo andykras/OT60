@@ -1,11 +1,9 @@
 ﻿using System;
-using TetrisModel;
 
 namespace DrawingSpeed
 {
   class MainClass
   {
-    
     public static void Main(string[] args)
     {
       // General TODO:
@@ -17,7 +15,7 @@ namespace DrawingSpeed
 
       // для main взять последний код с потоками! - OriginalTetris Program.cs
 
-      new TetrisGame().Run();
+      new DrawSceneTest().Run();
       Console.SetCursorPosition(0, 0);
     }
   }

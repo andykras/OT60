@@ -12,8 +12,9 @@ using Microsoft.Win32;
 namespace TetrisModel
 {
 
-  public interface ITetrisGame
+  public interface IScene
   {
+    Color Background { get; }
     event InvalidateEventHandler InvalidateEvent;
     void Add(IEventListener listener);
     void Remove(IEventListener listener);

@@ -11,13 +11,14 @@ using Microsoft.Win32;
 
 namespace TetrisModel
 {
-  public class TetrisGame:IKeyboardListener,ITetrisGame
+  public class TetrisGame:IKeyboardListener,IScene
   {
     public event InvalidateEventHandler InvalidateEvent;
 
     private ManualResetEvent isActive = new ManualResetEvent(false);
 
     private Color background = Color.Blue;
+    public Color Background { get { return background; } }
 
     private bool anim = true;
     public void Update(ConsoleKey key)
@@ -59,7 +60,7 @@ namespace TetrisModel
       subscribersLock.Exit();
     }
 
-    public Intro CreateIntro(IntroBuilder builder)
+    public IntroScene CreateIntro(IntroBuilder builder)
     {
       builder.BuildIntro(new ConsoleRenderEngine(this), this);
       builder.BuildBackground();
@@ -69,6 +70,13 @@ namespace TetrisModel
       return builder.GetIntro();
     }
 
+    public TetrisScene CreateMainScene(TetrisBuilder builder)
+    {
+      builder.BuildTetris(new TetrisFactory());
+      return builder.GetTetris();
+    }
+
+
     public TetrisGame()
     {
       Console.CursorVisible = false;
@@ -77,6 +85,8 @@ namespace TetrisModel
       //CreateEngine();
       var mainMenu = CreateIntro(new FancyIntroBuilder());
       mainMenu.InvalidateEvent += Invalidate;
+
+      var scene = CreateMainScene(new SimpleTetrisBuilder());
 
 //      Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this);
       ConsoleKeyboard.Get.Add(this);

@@ -25,10 +25,13 @@ namespace TetrisModel
     readonly static SimpleLock simple = new SimpleLock();
 
     private Thread render;
-    public ConsoleRenderEngine(ITetrisGame game)
+    private IScene scene;
+    public ConsoleRenderEngine(IScene scene)
     {
       Interlocked.Increment(ref Count);
-      game.InvalidateEvent += Update;
+      this.scene = scene;
+      scene.InvalidateEvent += Update;
+      background = ConsoleHelpers.Convert(scene.Background);
       render = new Thread(Render){ IsBackground = true, Name = Count.ToString() };
       render.Start();
       Enable = true;
@@ -36,9 +39,9 @@ namespace TetrisModel
     }
 
     private bool run = true;
-    public void Stop(ITetrisGame game)
+    public void Stop()
     {
-      game.InvalidateEvent -= Update;
+      scene.InvalidateEvent -= Update;
       run = false;
     }
 
@@ -91,12 +94,11 @@ namespace TetrisModel
       Console.Write("#{2}: Total scene objects: {0}, Key {1} pressed", objects.Count, key, N);
     }
 
-    private Color background = Color.Blue;
+    private ConsoleColor background = ConsoleColor.Black;
     private void ClearDevice()
     {
-      var b = ConsoleHelpers.Convert(background);
-      Console.BackgroundColor = b;
-      ConsoleHelpers.FillRect(b);
+      Console.BackgroundColor = background;
+      ConsoleHelpers.FillRect(background);
     }
   }
   

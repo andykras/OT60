@@ -59,14 +59,14 @@ namespace TetrisModel
       this.angle = angle;
       this.x = x;
       this.y = y;
-      if (InvalidateEvent != null) InvalidateEvent();
+      Invalidate();
     }
 
     public virtual void Rotate(double da)
     {
       this.angle += da;
       foreach (var unit in units) unit.Rotate(da);
-      if (InvalidateEvent != null) InvalidateEvent();
+      Invalidate();
     }
 
     //    public override void Rotate(int steps)
@@ -79,7 +79,7 @@ namespace TetrisModel
       this.x += dx;
       this.y += dy;
       foreach (var unit in units) unit.Move(dx, dy);
-      if (InvalidateEvent != null) InvalidateEvent();
+      Invalidate();
     }
 
     public virtual void Draw()
@@ -107,6 +107,11 @@ namespace TetrisModel
     public void SetColor(Color color)
     {
       throw new NotImplementedException();
+    }
+
+    protected void Invalidate()
+    {
+      if (InvalidateEvent != null) InvalidateEvent();
     }
   }
 }

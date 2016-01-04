@@ -50,11 +50,11 @@ namespace TetrisModel
             Thread.Sleep(d);
             time += d;
           }
-          if (!unit.Visible) {
-            int foo = 1;
-          }
+//          if (!unit.Visible) {
+//            int foo = 1;
+//          }
         }
-        unit.Enable = false;
+        //unit.Enable = false;
       }){ IsBackground = true };
       shaker.Start();
     }

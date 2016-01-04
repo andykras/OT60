@@ -19,8 +19,8 @@ namespace TetrisModel
     {
       shaker = new Thread(() =>
       {
-        var rnd = new Random(unit.GetHashCode());
-        var iter = 0;
+        //var rnd = new Random(unit.GetHashCode());
+        //var iter = 0;
         while (true) {
           isActive.WaitOne();
           //unit.Move((int) Math.Pow(-1, ++iter), 0);

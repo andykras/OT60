@@ -32,13 +32,7 @@
   <ItemGroup>
     <Compile Include="MyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TetrisFactory.cs" />
     <Compile Include="TetrisGame.cs" />
-    <Compile Include="Tetris.cs" />
-    <Compile Include="SimpleTetrisFactory.cs" />
-    <Compile Include="TetrisBuilder.cs" />
-    <Compile Include="SimpleTetrisBuilder.cs" />
-    <Compile Include="Board.cs" />
     <Compile Include="SmartLock.cs" />
     <Compile Include="Registry.cs" />
     <Compile Include="CellConsoleClassic.cs" />
@@ -67,18 +61,25 @@
     <Compile Include="SimpleLock.cs" />
     <Compile Include="ConsoleKeyboard.cs" />
     <Compile Include="Graphics\ConsoleRenderEngine.cs" />
-    <Compile Include="Game\ITetrisGame.cs" />
     <Compile Include="Game\IEventListener.cs" />
     <Compile Include="Game\GameEvent.cs" />
     <Compile Include="Graphics\IRenderEngine.cs" />
     <Compile Include="Game\TetrisGame.cs" />
-    <Compile Include="Intros\Intro.cs" />
-    <Compile Include="Intros\IntroBuilder.cs" />
-    <Compile Include="Intros\FancyIntroBuilder.cs" />
     <Compile Include="Handlers\IHandler.cs" />
     <Compile Include="Handlers\Rotor.cs" />
     <Compile Include="Handlers\Shaker.cs" />
     <Compile Include="Handlers\Falling.cs" />
+    <Compile Include="Scenes\IntroBuilder.cs" />
+    <Compile Include="Scenes\FancyIntroBuilder.cs" />
+    <Compile Include="Scenes\TetrisBuilder.cs" />
+    <Compile Include="Units\Board.cs" />
+    <Compile Include="Scenes\SimpleTetrisBuilder.cs" />
+    <Compile Include="Scenes\UnitsFactory.cs" />
+    <Compile Include="Scenes\Scene.cs" />
+    <Compile Include="Scenes\TetrisFactory.cs" />
+    <Compile Include="Scenes\TetrisScene.cs" />
+    <Compile Include="Scenes\IntroScene.cs" />
+    <Compile Include="Game\IScene.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -88,6 +89,6 @@
     <Folder Include="Units\" />
     <Folder Include="Game\" />
     <Folder Include="Handlers\" />
-    <Folder Include="Intros\" />
+    <Folder Include="Scenes\" />
   </ItemGroup>
 </Project>
