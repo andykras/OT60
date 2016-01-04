@@ -28,6 +28,11 @@ namespace TetrisModel
       return null;
     }
 
+    public virtual IRenderEngine MakeRenderEngine()
+    {
+      return null;
+    }
+
     /// <summary>
     /// Создает стакан тетриса
     /// </summary>

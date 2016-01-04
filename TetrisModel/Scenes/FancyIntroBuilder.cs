@@ -13,9 +13,9 @@ namespace TetrisModel
   public class FancyIntroBuilder : IntroBuilder
   {
     Random rnd = new Random();
-    public override void BuildIntro(IRenderEngine engine, IScene game)
+    public override void BuildIntro(UnitsFactory factory)
     {
-      intro = new IntroScene(engine, game);
+      intro = factory.MakeIntroScene();
     }
 
     public override void BuildBackground()

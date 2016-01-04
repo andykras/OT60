@@ -25,17 +25,27 @@ namespace TetrisModel
     readonly static SimpleLock simple = new SimpleLock();
 
     private Thread render;
-    private IScene scene;
-    public ConsoleRenderEngine(IScene scene)
+    private IGameUnit scene;
+    public ConsoleRenderEngine()
     {
       Interlocked.Increment(ref Count);
-      this.scene = scene;
-      scene.InvalidateEvent += Update;
-      background = ConsoleHelpers.Convert(scene.Background);
       render = new Thread(Render){ IsBackground = true, Name = Count.ToString() };
-      render.Start();
-      Enable = true;
       ConsoleKeyboard.Get.Add(this);
+    }
+
+    public void Start(IGameUnit scene)
+    {
+      if (!render.IsAlive) {
+        this.scene = scene;
+        scene.InvalidateEvent += Update;
+        Enable = true;
+        render.Start();
+      }
+    }
+
+    public void SetBackground(Color background)
+    {
+      this.background = ConsoleHelpers.Convert(background);
     }
 
     private bool run = true;
@@ -77,8 +87,8 @@ namespace TetrisModel
             ShowInfo();
           simple.Exit();
         }
-        Thread.Sleep(50);
         draw.Reset();
+        Thread.Sleep(50);
       }
     }
 

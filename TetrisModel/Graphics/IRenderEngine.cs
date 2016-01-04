@@ -10,5 +10,8 @@ namespace TetrisModel
     void Add(IGameUnit obj);
     void Remove(IGameUnit obj);
     void Update();
+    void Start(IGameUnit scene);
+    void Stop();
+    void SetBackground(Color background);
   }
 }

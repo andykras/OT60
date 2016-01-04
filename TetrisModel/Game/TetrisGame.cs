@@ -11,14 +11,11 @@ using Microsoft.Win32;
 
 namespace TetrisModel
 {
-  public class TetrisGame:IKeyboardListener,IScene
+  public class TetrisGame:IKeyboardListener
   {
-    public event InvalidateEventHandler InvalidateEvent;
+    //    public event InvalidateEventHandler InvalidateEvent;
 
     private ManualResetEvent isActive = new ManualResetEvent(false);
-
-    private Color background = Color.Blue;
-    public Color Background { get { return background; } }
 
     private bool anim = true;
     public void Update(ConsoleKey key)
@@ -62,7 +59,7 @@ namespace TetrisModel
 
     public IntroScene CreateIntro(IntroBuilder builder)
     {
-      builder.BuildIntro(new ConsoleRenderEngine(this), this);
+      builder.BuildIntro(new IntroFactory());
       builder.BuildBackground();
       builder.BuildTrees();
       builder.BuildAnimation();
@@ -84,7 +81,9 @@ namespace TetrisModel
 
       //CreateEngine();
       var mainMenu = CreateIntro(new FancyIntroBuilder());
-      mainMenu.InvalidateEvent += Invalidate;
+      //mainMenu.InvalidateEvent += Invalidate;
+      Add(mainMenu);
+      FireEvent(GameEvent.IntroStart);
 
       var scene = CreateMainScene(new SimpleTetrisBuilder());
 
@@ -122,7 +121,7 @@ namespace TetrisModel
     //      CreateIntro(builder);
     //      engine.Add(builder.GetIntro());
     //
-    ////      var stars = new Sprite(() => new ConsoleDevice(new [] { "." }), 
+    ////      var stars = new Sprite(() => new ConsoleDevice(new [] { "." }),
     ////                             () =>
     ////      {
     ////        var matrix = new ushort[H, W];
@@ -138,9 +137,9 @@ namespace TetrisModel
     ////      for (var i = 0; i < 150; i++) {
     ////        var x = -W / 2 + rnd.Next(W);
     ////        var y = -H / 2 + rnd.Next(H);
-    ////        var tree = new Sprite(() => new FastConsoleDevice(new [] { 
+    ////        var tree = new Sprite(() => new FastConsoleDevice(new [] {
     ////          @"  \  ",
-    ////          @" /*\ ", 
+    ////          @" /*\ ",
     ////          @"//|\\",
     ////          @"  |  ",
     ////          @" ___ "
@@ -150,9 +149,9 @@ namespace TetrisModel
     ////      }
     //      H = 20;
     //      W = 30;
-    //      var trees = new Sprite(() => new FastConsoleDevice(new [] { 
+    //      var trees = new Sprite(() => new FastConsoleDevice(new [] {
     //        @"  \  ",
-    //        @" /*\ ", 
+    //        @" /*\ ",
     //        @"//|\\",
     //        @"  |  ",
     //        @" ___ "
@@ -174,9 +173,9 @@ namespace TetrisModel
     //      simple.Exit();
     //    }
 
-    private void Invalidate()
-    {
-      if (InvalidateEvent != null) InvalidateEvent();
-    }
+    //    private void Invalidate()
+    //    {
+    //      if (InvalidateEvent != null) InvalidateEvent();
+    //    }
   }
 }

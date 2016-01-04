@@ -5,14 +5,11 @@ using System.Collections.Generic;
 
 namespace DrawingSpeed
 {
-  public class DrawSceneTest:IKeyboardListener,IScene
+  public class DrawSceneTest:IKeyboardListener
   {
-    public event InvalidateEventHandler InvalidateEvent;
+    //    public event InvalidateEventHandler InvalidateEvent;
 
     private ManualResetEvent isActive = new ManualResetEvent(false);
-
-    private Color background = Color.Blue;
-    public Color Background { get { return background; } }
 
     private bool anim = true;
     public void Update(ConsoleKey key)
@@ -56,7 +53,7 @@ namespace DrawingSpeed
 
     public IntroScene CreateIntro(IntroBuilder builder)
     {
-      builder.BuildIntro(new ConsoleRenderEngine(this), this);
+      builder.BuildIntro(new IntroFactory());
       builder.BuildBackground();
       builder.BuildTrees();
       builder.BuildAnimation();
@@ -76,7 +73,9 @@ namespace DrawingSpeed
       Sprite.refDot = false;
 
       var mainMenu = CreateIntro(new FancyIntroBuilder());
-      mainMenu.InvalidateEvent += Invalidate;
+      //mainMenu.InvalidateEvent += Invalidate;
+      Add(mainMenu);
+      FireEvent(GameEvent.IntroStart);
 
       ConsoleKeyboard.Get.Add(this);
     }
@@ -86,10 +85,10 @@ namespace DrawingSpeed
       isActive.WaitOne();
     }
 
-    private void Invalidate()
-    {
-      if (InvalidateEvent != null) InvalidateEvent();
-    }
+    //    private void Invalidate()
+    //    {
+    //      if (InvalidateEvent != null) InvalidateEvent();
+    //    }
   }
   
 }

@@ -15,17 +15,21 @@ namespace TetrisModel
   /// </summary>
   public class IntroScene:CompositeUnit,IEventListener
   {
-    public IntroScene(IRenderEngine engine, IScene game)
+    public IntroScene(IRenderEngine engine)
     {
       this.engine = engine;
-      game.Add(this);
+      if (engine != null)
+        engine.SetBackground(Color.Blue);
     }
 
     public void Update(GameEvent e)
     {
       if (e == GameEvent.IntroStart) {
         foreach (var handler in handlers) handler.Start();
-        if (engine != null) engine.Enable = true;
+        if (engine != null) {
+          engine.Start(this);
+          engine.Enable = true;
+        }
       }
       else if (e == GameEvent.IntroStop) {
         foreach (var handler in handlers) handler.Stop();
