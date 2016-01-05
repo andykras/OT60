@@ -12,7 +12,7 @@ namespace TetrisModel
 {
   public class IntroBuilder
   {
-    public virtual void BuildIntro(UnitsFactory factory)
+    public virtual void BuildIntro()
     {
     }
     public virtual void BuildBackground()

@@ -72,11 +72,11 @@
     <Compile Include="Units\Board.cs" />
     <Compile Include="Scenes\SimpleTetrisBuilder.cs" />
     <Compile Include="Scenes\UnitsFactory.cs" />
-    <Compile Include="Scenes\Scene.cs" />
     <Compile Include="Scenes\TetrisFactory.cs" />
     <Compile Include="Scenes\TetrisScene.cs" />
     <Compile Include="Scenes\IntroScene.cs" />
     <Compile Include="Scenes\IntroFactory.cs" />
+    <Compile Include="Scenes\MainMenuBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

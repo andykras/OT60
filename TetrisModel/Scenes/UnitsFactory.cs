@@ -28,11 +28,6 @@ namespace TetrisModel
       return null;
     }
 
-    public virtual IRenderEngine MakeRenderEngine()
-    {
-      return null;
-    }
-
     /// <summary>
     /// Создает стакан тетриса
     /// </summary>
@@ -47,10 +42,30 @@ namespace TetrisModel
     /// Создает фигурку - тетрамино например
     /// </summary>
     /// <returns>The piece.</returns>
-    public virtual Sprite MakeSprite()
+    public virtual IGameUnit MakePiece()
     {
       return null;
     }
+
+    public virtual IGameUnit MakeStars()
+    {
+      return null;
+    }
+
+    public virtual IGameUnit MakeTrees()
+    {
+      return null;
+    }
+    public virtual IGameUnit MakeSnowFlake()
+    {
+      return null;
+    }
+
+    public virtual CompositeUnit MakeComposite()
+    {
+      return null;
+    }
+
   }
 
 }

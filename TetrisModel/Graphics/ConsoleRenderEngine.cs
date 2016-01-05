@@ -6,53 +6,38 @@ namespace TetrisModel
 {
   public class ConsoleRenderEngine : IRenderEngine, IKeyboardListener
   {
-    public bool Enable { get; set; }
+    public bool Enabled { get; private set; }
 
-    private ConsoleKey key;
-    public void Update(ConsoleKey key)
-    {
-      this.key = key;
-      if (key == ConsoleKey.I) toggleShowInfo = !toggleShowInfo;
-      Update();
-    }
-
-    public static int Count;
-
-    private bool toggleShowInfo = true;
-
-    ManualResetEvent draw = new ManualResetEvent(false);
-    List<IGameUnit> objects = new List<IGameUnit>();
-    readonly static SimpleLock simple = new SimpleLock();
-
-    private Thread render;
-    private IGameUnit scene;
     public ConsoleRenderEngine()
     {
-      Interlocked.Increment(ref Count);
-      render = new Thread(Render){ IsBackground = true, Name = Count.ToString() };
+      stop = false;
+      Interlocked.Increment(ref threadID);
+      new Thread(Render){ IsBackground = true, Name = threadID.ToString() }.Start();
       ConsoleKeyboard.Get.Add(this);
+    }
+
+    public void Invalidate()
+    {
+      invalidate.Set();
     }
 
     public void Start(IGameUnit scene)
     {
-      if (!render.IsAlive) {
-        this.scene = scene;
-        scene.InvalidateEvent += Update;
-        Enable = true;
-        render.Start();
-      }
+      if (Enabled)
+        return;
+      this.scene = scene;
+      scene.InvalidateEvent += Invalidate;
+      Invalidate();
+      Enabled = true;
     }
 
-    public void SetBackground(Color background)
-    {
-      this.background = ConsoleHelpers.Convert(background);
-    }
-
-    private bool run = true;
     public void Stop()
     {
-      scene.InvalidateEvent -= Update;
-      run = false;
+      if (!Enabled)
+        return;
+      Enabled = false;
+      scene.InvalidateEvent -= Invalidate;
+      invalidate.Reset();
     }
 
     public void Add(IGameUnit obj)
@@ -69,47 +54,67 @@ namespace TetrisModel
       simple.Exit();
     }
 
-    public void Update()
+    public void SetBackground(Color background)
     {
-      draw.Set();
+      this.background = ConsoleHelpers.Convert(background);
+    }
+
+    public void Update(ConsoleKey key)
+    {
+      if (Enabled) {
+        this.key = key;
+        if (key == ConsoleKey.I) toggleShowInfo = !toggleShowInfo;
+        if (key == ConsoleKey.Escape) stop = true;
+        Invalidate();
+      }
     }
 
     private void Render()
     {
-      while (run) {
-        draw.WaitOne();
-        if (Enable) {
-          simple.Enter();
-          ClearDevice();
-          for (var i = 0; i < objects.Count; i++) objects[i].Draw();
-          //foreach (var obj in objects) obj.Draw();
-          if (toggleShowInfo)
-            ShowInfo();
-          simple.Exit();
-        }
-        draw.Reset();
+      while (!stop) {
+        invalidate.WaitOne();
+        simple.Enter();
+        ClearDevice();
+        for (var i = 0; i < objects.Count; i++) objects[i].Draw();
+        //foreach (var obj in objects) obj.Draw();
+        if (toggleShowInfo)
+          ShowInfo();
+        simple.Exit();
+        invalidate.Reset();
         Thread.Sleep(50);
       }
     }
 
     private void ShowInfo()
     {
-      var N = int.Parse(Thread.CurrentThread.Name);
+      var id = int.Parse(Thread.CurrentThread.Name);
       Console.ForegroundColor = ConsoleColor.White;
-      var color = (N + 3) % 15;
+      var color = (id + 3) % 15;
       Console.BackgroundColor = (ConsoleColor) color;
-//      Console.SetCursorPosition(0, int.Parse(Thread.CurrentThread.Name) - 1);
+//      Console.SetCursorPosition(0, id - 1);
 //      Console.Write(new String(' ', Console.WindowWidth));
-      Console.SetCursorPosition(0, int.Parse(Thread.CurrentThread.Name) - 1);
-      Console.Write("#{2}: Total scene objects: {0}, Key {1} pressed", objects.Count, key, N);
+      Console.SetCursorPosition(0, id - 1);
+      Console.Write("#{2}: Total scene objects: {0}, Key {1} pressed", objects.Count, key, id);
     }
 
-    private ConsoleColor background = ConsoleColor.Black;
     private void ClearDevice()
     {
       Console.BackgroundColor = background;
       ConsoleHelpers.FillRect(background);
     }
+
+    private static int threadID;
+    private ConsoleKey key;
+    private bool toggleShowInfo = true;
+    private bool stop;
+
+    ManualResetEvent invalidate = new ManualResetEvent(false);
+    readonly static SimpleLock simple = new SimpleLock();
+
+    private IGameUnit scene;
+    List<IGameUnit> objects = new List<IGameUnit>();
+
+    private ConsoleColor background = ConsoleColor.Black;
   }
   
 }

@@ -59,7 +59,7 @@ namespace TetrisModel
 
     public IntroScene CreateIntro(IntroBuilder builder)
     {
-      builder.BuildIntro(new IntroFactory());
+      builder.BuildIntro();
       builder.BuildBackground();
       builder.BuildTrees();
       builder.BuildAnimation();
@@ -69,7 +69,7 @@ namespace TetrisModel
 
     public TetrisScene CreateMainScene(TetrisBuilder builder)
     {
-      builder.BuildTetris(new TetrisFactory());
+      builder.BuildTetris();
       return builder.GetTetris();
     }
 
@@ -80,12 +80,12 @@ namespace TetrisModel
       Sprite.refDot = false;
 
       //CreateEngine();
-      var mainMenu = CreateIntro(new FancyIntroBuilder());
+      var mainMenu = CreateIntro(new FancyIntroBuilder(new IntroFactory()));
       //mainMenu.InvalidateEvent += Invalidate;
       Add(mainMenu);
       FireEvent(GameEvent.IntroStart);
 
-      var scene = CreateMainScene(new SimpleTetrisBuilder());
+      var scene = CreateMainScene(new SimpleTetrisBuilder(new TetrisFactory()));
 
 //      Registry<KeyboardEvents>.GetInstanceOf<KeyboardEvents>().Add(this);
       ConsoleKeyboard.Get.Add(this);

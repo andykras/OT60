@@ -4,11 +4,13 @@ namespace TetrisModel
 {
   public class SimpleTetrisBuilder : TetrisBuilder
   {
-    public SimpleTetrisBuilder()
+    UnitsFactory factory;
+    public SimpleTetrisBuilder(UnitsFactory factory)
     {
+      this.factory = factory;
     }
 
-    public override void BuildTetris(UnitsFactory factory)
+    public override void BuildTetris()
     {
       tetris = factory.MakeTetrisScene();
       //var board = factory.MakeBoard();

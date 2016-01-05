@@ -49,7 +49,7 @@ namespace TetrisModel
     }
 
     public Sprite(double x = 0, double y = 0, Color color = Color.White, double angle = 0) :
-      this(() => new ConsoleDevice("*"), Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>(), x, y, color, angle)
+      this(() => new ConsoleDevice("█"), Registry<PatternFactory>.GetInstanceOf<BoxPatternFactory>(), x, y, color, angle)
     {
     }
 

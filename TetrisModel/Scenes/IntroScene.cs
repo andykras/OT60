@@ -18,27 +18,23 @@ namespace TetrisModel
     public IntroScene(IRenderEngine engine)
     {
       this.engine = engine;
-      if (engine != null)
-        engine.SetBackground(Color.Blue);
+      engine.SetBackground(Color.Blue);
     }
 
     public void Update(GameEvent e)
     {
       if (e == GameEvent.IntroStart) {
         foreach (var handler in handlers) handler.Start();
-        if (engine != null) {
-          engine.Start(this);
-          engine.Enable = true;
-        }
+        engine.Start(this);
       }
       else if (e == GameEvent.IntroStop) {
         foreach (var handler in handlers) handler.Stop();
-        if (engine != null) engine.Enable = false;
+        engine.Stop();
       }
-      else if (e == GameEvent.IntroToggleBackground) {
+      else if (e == GameEvent.IntroToggleBackground && engine.Enabled) {
         background.Enable = !background.Enable;
       }
-      else if (e == GameEvent.IntroToggleTrees) {
+      else if (e == GameEvent.IntroToggleTrees && engine.Enabled) {
         trees.Enable = !trees.Enable;
         if (trees.Enable)
           treesHandler.Start();
@@ -74,10 +70,7 @@ namespace TetrisModel
         handlers.Add(handler);
       AddUnit(unit);
       unit.InvalidateEvent += Invalidate;
-      if (engine != null) {
-        engine.Add(unit);
-        engine.Update();
-      }
+      engine.Add(unit);
     }
 
     private List<IHandler> handlers = new List<IHandler>();

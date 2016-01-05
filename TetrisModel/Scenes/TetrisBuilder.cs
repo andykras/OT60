@@ -5,7 +5,7 @@ namespace TetrisModel
   public class TetrisBuilder
   {
     // IRenderEngine engine, ITetrisGame game
-    public virtual void BuildTetris(UnitsFactory factory)
+    public virtual void BuildTetris()
     {
     }
 

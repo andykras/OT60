@@ -1,29 +1,18 @@
 using System;
-using TetrisModel;
-using System.Threading;
 using System.Collections.Generic;
+using System.Threading;
+using TetrisModel;
 
-namespace DrawingSpeed
+namespace MainMenu
 {
-  public class DrawSceneTest:IKeyboardListener
+  public class MenuTest:IKeyboardListener
   {
-    //    public event InvalidateEventHandler InvalidateEvent;
+    private readonly ManualResetEvent isActive = new ManualResetEvent(false);
 
-    private ManualResetEvent isActive = new ManualResetEvent(false);
-
-    private bool anim = true;
     public void Update(ConsoleKey key)
     {
       if (key == ConsoleKey.Escape)
         isActive.Set();
-      else if (key == ConsoleKey.Spacebar) {
-        anim = !anim;
-        FireEvent(anim ? GameEvent.IntroStart : GameEvent.IntroStop);
-      }
-      else if (key == ConsoleKey.B)
-        FireEvent(GameEvent.IntroToggleBackground);
-      else if (key == ConsoleKey.T)
-        FireEvent(GameEvent.IntroToggleTrees);
     }
 
     private SimpleLock subscribersLock = new SimpleLock();
@@ -51,24 +40,19 @@ namespace DrawingSpeed
       subscribersLock.Exit();
     }
 
-    public IntroScene CreateIntro(IntroBuilder builder)
+    public IntroScene CreateMenu(MainMenuBuilder builder)
     {
       builder.BuildIntro();
-      builder.BuildBackground();
-      builder.BuildTrees();
-      builder.BuildAnimation();
       builder.BuildMenu();
       return builder.GetIntro();
     }
 
-    public DrawSceneTest()
+    public MenuTest()
     {
       Console.CursorVisible = false;
-      Sprite.refDot = false;
+      Sprite.refDot = true;
 
-      var mainMenu = CreateIntro(new FancyIntroBuilder(new IntroFactory()));
-      //mainMenu.InvalidateEvent += Invalidate;
-      Add(mainMenu);
+      Add(CreateMenu(new MainMenuBuilder(new IntroFactory())));
       FireEvent(GameEvent.IntroStart);
 
       ConsoleKeyboard.Get.Add(this);
@@ -78,11 +62,5 @@ namespace DrawingSpeed
     {
       isActive.WaitOne();
     }
-
-    //    private void Invalidate()
-    //    {
-    //      if (InvalidateEvent != null) InvalidateEvent();
-    //    }
   }
-  
 }
