@@ -2,7 +2,7 @@
 using TetrisModel;
 
 
-namespace GameUnits
+namespace Yagan
 {
   class MainClass
   {

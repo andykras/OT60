@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2449408A-AD9E-4063-B652-353494341F55}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Yagan</RootNamespace>
+    <AssemblyName>Yagan</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MyClass.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Pixel\CharPixel.cs" />
+    <Compile Include="Pixel\CharSprite.cs" />
+    <Compile Include="Pixel\IPixel.cs" />
+    <Compile Include="Pixel\Sprite.cs" />
+    <Compile Include="Visitor\IPixelVisitor.cs" />
+    <Compile Include="Visitor\PixelCounter.cs" />
+    <Compile Include="Painter\EmptyPainter.cs" />
+    <Compile Include="Painter\IPainter.cs" />
+    <Compile Include="Painter\PixelPainter.cs" />
+    <Compile Include="Painter\SpritePainter.cs" />
+    <Compile Include="Graphics\ConsoleScreen.cs" />
+    <Compile Include="Pixel\Pixel.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Pixel\" />
+    <Folder Include="Visitor\" />
+    <Folder Include="Painter\" />
+    <Folder Include="Graphics\" />
+  </ItemGroup>
+</Project>

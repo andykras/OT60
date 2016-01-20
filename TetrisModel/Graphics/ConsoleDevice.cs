@@ -9,7 +9,7 @@ namespace TetrisModel
   public class ConsoleDevice : IDevice
   {
     /// <summary>
-    /// Coordinates which were eobtained from sprite
+    /// Coordinates which were obtained from sprite
     /// </summary>
     private readonly List<int> coords;
 
