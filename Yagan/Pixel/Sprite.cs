@@ -4,13 +4,57 @@ using System.Collections;
 
 namespace Yagan
 {
+  public class CloneSprite : IPixel
+  {
+    readonly IPixel sprite;
+    public CloneSprite(Sprite sprite)
+    {
+      this.sprite = sprite.Clone();
+    }
+    public void Set(double x, double y)
+    {
+      sprite.Set(x, y);
+    }
+
+    public void Move(double dx, double dy)
+    {
+      sprite.Move(dx, dy);
+    }
+
+    public void Accept(IPixelVisitor visitor)
+    {
+      sprite.Accept(visitor);
+    }
+
+    public void Draw(IPainter painter)
+    {
+      sprite.Draw(painter);
+    }
+
+    public IPixel Clone()
+    {
+      return sprite.Clone();
+    }
+
+    public double X { get { return sprite.X; } }
+
+    public double Y { get { return sprite.Y; } }
+
+    public ConsoleColor Color { get { return sprite.Color; } }
+
+    public int Width { get { return sprite.Width; } }
+
+    public int Height { get { return sprite.Height; } }
+  }
+
+
   public class Sprite : IPixel, IEnumerable<IPixel>
   {
     protected readonly List<IPixel> pixels = new List<IPixel>();
     private double x, y;
 
-    public virtual double X { get { return width == 0 ? x : xmin; } protected set { x = value; } }
-    public virtual double Y { get { return height == 0 ? y : ymax; } protected set { y = value; } }
+    public virtual double X { get { return width == 0 ? x : xmin; } protected set { xmin = value; } }
+    public virtual double Y { get { return height == 0 ? y : ymax; } protected set { ymax = value; } }
     public ConsoleColor Color { get; }
     public double Angle { get; protected set; }
 

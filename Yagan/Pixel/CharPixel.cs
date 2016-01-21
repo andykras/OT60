@@ -15,7 +15,6 @@ namespace Yagan
 
     public CharPixel(char pixel = (char) 0, double x = 0, double y = 0, ConsoleColor color = ConsoleColor.White)
     {
-      Representation = () => Console.Write(pixel);
       this.pixel = pixel;
       X = x;
       Y = y;
@@ -32,9 +31,6 @@ namespace Yagan
     {
       visitor.Visit(this);
     }
-
-    public Action Representation { get; set; }
-    public Action<IDevice> RepresentationOnScreen { get; set; }
 
     public virtual void Draw(IPainter painter)
     {

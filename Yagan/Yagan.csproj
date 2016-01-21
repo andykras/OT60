@@ -41,10 +41,9 @@
     <Compile Include="Visitor\PixelCounter.cs" />
     <Compile Include="Painter\EmptyPainter.cs" />
     <Compile Include="Painter\IPainter.cs" />
-    <Compile Include="Painter\PixelPainter.cs" />
     <Compile Include="Painter\SpritePainter.cs" />
     <Compile Include="Graphics\ConsoleScreen.cs" />
-    <Compile Include="Pixel\Pixel.cs" />
+    <Compile Include="Painter\CharPainter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
