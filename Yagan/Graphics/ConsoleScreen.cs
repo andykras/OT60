@@ -19,11 +19,11 @@ namespace Yagan
       return count * limit * sign;
     }
 
-    private static int ToScreenX(double x)
+    public static int ToScreenX(double x)
     {
       return (int) Fit(Zoom * x + Console.WindowWidth / 2, 0.5);
     }
-    private static int ToScreenY(double y)
+    public  static int ToScreenY(double y)
     {
       return (int) Fit(Console.WindowHeight / 2 - Zoom * y, 0.5);
     }
@@ -59,11 +59,11 @@ namespace Yagan
       Console.Clear();
     }
 
-    public static void Fill(char symbol = ' ')
+    public static void Fill(char symbol = ' ', ConsoleColor color = ConsoleColor.Black)
     {
       Console.BackgroundColor = ConsoleColor.Black;
       var line = new string(symbol, Console.WindowWidth);
-      Console.ForegroundColor = ConsoleColor.Black;
+      Console.ForegroundColor = color;
       for (var i = 0; i < Console.WindowHeight; i++) {
         Console.SetCursorPosition(0, i);
         Console.Write(line);
