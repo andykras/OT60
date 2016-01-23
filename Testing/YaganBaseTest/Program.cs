@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define ipix
+
+using System;
 using Yagan;
 using System.Threading;
 using System.Collections.Generic;
@@ -24,6 +26,22 @@ namespace YaganBaseTest
   }
 
 
+  class IPixelComparer : IEqualityComparer<IPixel>
+  {
+    static double eps = 1e-5;
+    public bool Equals(IPixel p1, IPixel p2)
+    {
+      return Math.Abs(ConsoleScreen.ToScreenX(p1.X) - ConsoleScreen.ToScreenX(p2.X)) < eps &&
+      Math.Abs(ConsoleScreen.ToScreenY(p1.Y) - ConsoleScreen.ToScreenY(p2.Y)) < eps;
+    }
+    public int GetHashCode(IPixel p)
+    {
+      return ConsoleScreen.ToScreenX(p.X) ^ ConsoleScreen.ToScreenY(p.Y);
+    }
+  }
+
+
+
   class MainClass
   {
     public static void Main(string[] args)
@@ -39,45 +57,107 @@ namespace YaganBaseTest
 //        "     █▀█▀█     "
 //      });
       var one_device = new ConsoleCharDevice<char>('*');
-      var many_pixels = new List<Pixel>();
 
-      var f = 30;
-      var count = 10000;
+      #if ipix
+      var many_pixels = new List<IPixel>();
+      #else
+      var many_pixels = new List<Pixel>();
+      #endif
+      //var painter = new CharPainter<Plain>();
+      var black = new ColorPainter<Plain>(ConsoleColor.Black);
+      var painter = new SmartPainter();
+      //      var painter = new SmartColorPainter();
+
+      var f = 20;
+      var count = 100;
       var rnd = new Random((int) DateTime.Now.ToBinary());
       for (var i = 0; i < count; i++) {
+        #if ipix
+        many_pixels.Add(new CharSprite(new [] { 
+          "    ▄▄▄▄▄▄▄    ",
+          "▀█████████████▀",
+          "    █▄███▄█    ",
+          "     █████     ",
+          "     █▀█▀█     "
+        }, -f + 2 * f * rnd.NextDouble(), -f + 2 * f * rnd.NextDouble(), 0, (ConsoleColor) rnd.Next(1, 15)){ ShowLabel = false });
+        #else
         many_pixels.Add(new Pixel(one_device, -f + f * rnd.NextDouble(), -f + f * rnd.NextDouble(), (ConsoleColor) rnd.Next(1, 15)));
+        #endif
       }
 
 
       var simple = new Painter2();
-      var black = new Painter2Black();
+      //var black = new Painter2Black();
       double xx = 0;
-      var timer = 120;
+      var timer = 50;//1000 / 60;
       var clear = true;
       double yy = 0;
       double xd = 1;
       double yd = 1;
       var stopWatch = new Stopwatch();
+      //var set_pixels = new HashSet<Pixel>(new PixelComparer());
+      #if ipix
+      var set_pixels = new HashSet<IPixel>(new IPixelComparer());
+      var set_visitor = new HashVisitor(set_pixels);
+      #else
       var set_pixels = new HashSet<Pixel>(new PixelComparer());
+      #endif
+      ConsoleColor sleepColor = ConsoleColor.DarkGray;
       do {
         stopWatch.Reset();
         stopWatch.Start();
+
+        //Console.Clear();
+        painter.Begin();
+
+        //Console.SetWindowSize(1, 1);
+        //Console.SetBufferSize(80, 80);
+        //Console.SetWindowSize(40, 20);
+        //Console.ResetColor();
+
+        //Console.SetCursorPosition(0, 0);
+        //Console.Write(new string(' ', Console.WindowWidth * Console.WindowHeight));
+        //Console.MoveBufferArea();
+
+
+//        foreach (var p in set_pixels) {
+//          #if ipix 
+//          p.Draw(black);
+//          #else  
+//          p.Draw();
+//          #endif
+//        }
+
         //ConsoleScreen.Zoom = 0.03 + 10 + 20 * Math.Sin(dd / 20.0) * Math.Cos(dd / 20.0);
-        ConsoleScreen.Zoom = 1.5 * (1 + Math.Sin(xx / 30.0) * Math.Cos(yy / 15.0)) / 2.0;
+        ConsoleScreen.Zoom = 2.5 * (1 + Math.Sin(xx / 30.0) * Math.Cos(yy / 15.0)) / 2.0;
         Console.BackgroundColor = ConsoleColor.Black;
-        Console.Clear();
+
+        var draw_all = ConsoleScreen.Zoom > 1.5;
+
         foreach (var p in many_pixels) {
           p.Move(xd, yd);
+          if (draw_all) p.Draw(painter);
         }
 
-        set_pixels.Clear();
-        for (var i = count; i > 0; i--) set_pixels.Add(many_pixels[i - 1]);
-        //foreach (var p in many_pixels) set_pixels.Add(p);
+        if (!draw_all) {
+          set_pixels.Clear();
+          //for (var i = count; i > 0; i--) many_pixels[i - 1].Accept(set_visitor);
+          foreach (var p in many_pixels) p.Accept(set_visitor);
+          //foreach (var p in many_pixels) set_pixels.Add(p);
 
-        // Draw only one pixel at the same place
-        foreach (var p in set_pixels) p.Draw();
+          // Draw only one pixel at the same place
+          foreach (var p in set_pixels) {
+            #if ipix 
+            p.Draw(painter);
+            #else  
+          p.Draw();
+            #endif
+          }
+        }
 
-        var str = string.Format(" Zoom: {0:F2}, dd={1:F1}, Q={2} [{3}] ", ConsoleScreen.Zoom, yy, set_pixels.Count, many_pixels.Count);
+        painter.End();
+
+        var str = string.Format(" Zoom: {0:F2}, dd={1:F1}, Q={2} [{3}], Filter={4} ", ConsoleScreen.Zoom, yy, set_pixels.Count, many_pixels.Count, draw_all ? "Off" : "On");
         Console.BackgroundColor = ConsoleColor.Black;
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.SetCursorPosition(1, 1);
@@ -89,7 +169,7 @@ namespace YaganBaseTest
         Console.BackgroundColor = ConsoleColor.Black;
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.SetCursorPosition(1, 3);
-        Console.Write(new string('▀', str.Length));
+        Console.WriteLine(new string('▀', str.Length));
 
         xx += xd;
         if (xx > 30) xd = -0.3;
@@ -100,8 +180,14 @@ namespace YaganBaseTest
         stopWatch.Stop();
 
         var sleep = (int) (timer - stopWatch.ElapsedMilliseconds);
+        if (sleep < 0)
+          sleepColor = ConsoleColor.DarkRed;
+        Console.ForegroundColor = sleepColor;
+        Console.Write("{2} = {0:D2}(draw) + {1:D2}(sleep)", stopWatch.ElapsedMilliseconds, sleep, timer);
+
         if (sleep > 0)
           Thread.Sleep(sleep);
+
       } while(true);
     }
   }

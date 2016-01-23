@@ -9,6 +9,13 @@ namespace Yagan
     public virtual void Draw(Sprite sprite)
     {
     }
+
+    public void Begin()
+    {
+    }
+    public void End()
+    {
+    }
   }
   
 }

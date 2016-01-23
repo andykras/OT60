@@ -1,6 +1,30 @@
+using System.Collections.Generic;
+
 namespace Yagan
 {
-  class PixelCounter : IPixelVisitor
+  public class HashVisitor : IPixelVisitor
+  {
+    HashSet<IPixel> set;
+    public HashVisitor(HashSet<IPixel> set)
+    {
+      this.set = set;
+    }
+    public void Visit(IPixel pixel)
+    {
+      set.Add(pixel);
+    }
+
+    public void Visit(CharSprite sprite)
+    {
+    }
+
+    public void Visit(Sprite sprite)
+    {
+    }
+  }
+
+
+  public class PixelCounter : IPixelVisitor
   {
     int charPixelCounter;
     public int TotalCharPixels { get { return charPixelCounter; } }
