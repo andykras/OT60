@@ -63,14 +63,16 @@ namespace YaganBaseTest
       #else
       var many_pixels = new List<Pixel>();
       #endif
+//      var black = new ColorPainter<PlainSprite>(ConsoleColor.Black);
       //var painter = new CharPainter<Plain>();
-      var black = new ColorPainter<Plain>(ConsoleColor.Black);
-      var painter = new SmartPainter();
-      //      var painter = new SmartColorPainter();
+      //var painter = new SmartPainter();
+      //var painter = new SmartColorPainter();
+      var painter = new CharPainter();
 
       var f = 20;
       var count = 100;
-      var rnd = new Random((int) DateTime.Now.ToBinary());
+      //var rnd = new Random((int) DateTime.Now.ToBinary());
+      var rnd = new Random(42);
       for (var i = 0; i < count; i++) {
         #if ipix
         many_pixels.Add(new CharSprite(new [] { 
@@ -95,6 +97,7 @@ namespace YaganBaseTest
       double xd = 1;
       double yd = 1;
       var stopWatch = new Stopwatch();
+      var stopProgram = new Stopwatch();
       //var set_pixels = new HashSet<Pixel>(new PixelComparer());
       #if ipix
       var set_pixels = new HashSet<IPixel>(new IPixelComparer());
@@ -103,11 +106,18 @@ namespace YaganBaseTest
       var set_pixels = new HashSet<Pixel>(new PixelComparer());
       #endif
       ConsoleColor sleepColor = ConsoleColor.DarkGray;
+      stopProgram.Start();
+      int negativeCount = 0, totalCount = 0;
+      double drawTime = 0;
+      var width = Console.WindowWidth;
+      var height = Console.WindowHeight;
       do {
         stopWatch.Reset();
         stopWatch.Start();
 
-        //Console.Clear();
+        Console.Clear();
+        if (width != Console.WindowWidth || height != Console.WindowHeight)
+          painter = new CharPainter();
         painter.Begin();
 
         //Console.SetWindowSize(1, 1);
@@ -133,10 +143,13 @@ namespace YaganBaseTest
         Console.BackgroundColor = ConsoleColor.Black;
 
         var draw_all = ConsoleScreen.Zoom > 1.5;
+        draw_all = true;
 
         foreach (var p in many_pixels) {
           p.Move(xd, yd);
-          if (draw_all) p.Draw(painter);
+          if (draw_all)
+            p.Draw(painter);
+          //p.Draw(new RotateWrapper(painter));
         }
 
         if (!draw_all) {
@@ -157,7 +170,7 @@ namespace YaganBaseTest
 
         painter.End();
 
-        var str = string.Format(" Zoom: {0:F2}, dd={1:F1}, Q={2} [{3}], Filter={4} ", ConsoleScreen.Zoom, yy, set_pixels.Count, many_pixels.Count, draw_all ? "Off" : "On");
+        var str = string.Format(" Zoom: {0:F2}, dd={1:F1}, Q={2} [{3}], Filter={4}, C={5} ", ConsoleScreen.Zoom, yy, set_pixels.Count, many_pixels.Count, draw_all ? "Off" : "On", CharPainter.Count);
         Console.BackgroundColor = ConsoleColor.Black;
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.SetCursorPosition(1, 1);
@@ -180,15 +193,22 @@ namespace YaganBaseTest
         stopWatch.Stop();
 
         var sleep = (int) (timer - stopWatch.ElapsedMilliseconds);
-        if (sleep < 0)
-          sleepColor = ConsoleColor.DarkRed;
+        sleepColor = sleep < 0 ? ConsoleColor.DarkRed : ConsoleColor.DarkGray;
         Console.ForegroundColor = sleepColor;
         Console.Write("{2} = {0:D2}(draw) + {1:D2}(sleep)", stopWatch.ElapsedMilliseconds, sleep, timer);
+        drawTime += stopWatch.ElapsedMilliseconds;
+        totalCount++;
 
-        if (sleep > 0)
-          Thread.Sleep(sleep);
+        if (sleep < 0)
+          negativeCount++;
+        Thread.Sleep(sleep > 0 ? sleep : 16);
+//        if (sleep > 0)
+//          Thread.Sleep(sleep);
 
-      } while(true);
+      } while(stopProgram.ElapsedMilliseconds < 2 * 60 * 1000);
+      Console.SetCursorPosition(0, 10);
+      Console.ForegroundColor = ConsoleColor.White;
+      Console.Write("Draw: {0:F2}(ms), Negative: {3:F0}%({2}/{1})", drawTime / totalCount, totalCount, negativeCount, 100.0 * negativeCount / totalCount);
     }
   }
 }
