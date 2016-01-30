@@ -48,6 +48,12 @@ namespace Yagan
   }
 
 
+  // создать две разновидности спрайта:
+  // Plain - без вращения
+  // Sprite - с углом
+  // соот-но Painter будет принимать на вход два разных объекта и по разному рисовать
+  // аналоги Rotate strategy и  Plain strategy
+
   public class Sprite : IPixel, IEnumerable<IPixel>
   {
     protected readonly List<IPixel> pixels = new List<IPixel>();
